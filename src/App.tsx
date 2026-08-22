@@ -4,6 +4,7 @@ import { DataProvider } from '@/contexts/DataContext';
 import { AuthScreen } from '@/components/auth/AuthScreen';
 import { AppShell } from '@/components/layout/AppShell';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { Analytics } from "@vercel/analytics/next"
 
 function SupabaseMissingScreen() {
   return (
