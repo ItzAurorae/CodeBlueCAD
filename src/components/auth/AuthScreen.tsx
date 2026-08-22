@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Radio, ShieldAlert, Loader2 } from 'lucide-react';
+import { ShieldAlert, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button, Input, Label, Select } from '@/components/ui/Form';
+import logo from '/CodeBlueCAD.png';
 
 const DEPARTMENTS = ['Police', 'Sheriff', 'State Patrol', 'EMS', 'Fire'];
 const RANKS = [
@@ -68,11 +69,13 @@ export function AuthScreen() {
 
       <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-brand-500/40 bg-brand-500/10 shadow-lg shadow-brand-500/10">
-            <Radio className="h-7 w-7 text-brand-400" />
-          </div>
+          <img
+            src={logo}
+            alt="CodeBlueCAD"
+            className="mx-auto mb-4 h-16 w-16 rounded-2xl object-cover shadow-lg shadow-brand-500/10"
+          />
           <h1 className="text-2xl font-extrabold tracking-tight text-white">
-            SENTINEL CAD
+            CodeBlueCAD
           </h1>
           <p className="mt-1 text-sm text-slate-400">
             Computer-Aided Dispatch Terminal

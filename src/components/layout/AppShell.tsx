@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import {
-  Radio,
   LayoutDashboard,
   Siren,
   FolderSearch,
@@ -18,6 +17,7 @@ import { useData } from '@/contexts/DataContext';
 import { supabase } from '@/lib/supabase';
 import type { Unit, UnitStatus } from '@/lib/types';
 import { UNIT_STATUS_META } from '@/lib/ui';
+import logo from '/CodeBlueCAD.png';
 import { DispatchBoard } from '@/components/dispatch/DispatchBoard';
 import { RecordsView } from '@/components/records/RecordsView';
 import { Dashboard } from '@/components/dashboard/Dashboard';
@@ -121,12 +121,10 @@ export function AppShell() {
     <div className="flex h-screen overflow-hidden">
       <aside className="flex w-64 shrink-0 flex-col border-r border-ink-800 bg-ink-900">
         <div className="flex items-center gap-3 border-b border-ink-800 px-5 py-4">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-500/40 bg-brand-500/10">
-            <Radio className="h-5 w-5 text-brand-400" />
-          </div>
+          <img src={logo} alt="CodeBlueCAD" className="h-9 w-9 rounded-lg object-cover" />
           <div>
             <p className="text-sm font-extrabold tracking-tight text-white">
-              SENTINEL CAD
+              CodeBlueCAD
             </p>
             <p className="text-[11px] text-slate-500">Dispatch Terminal</p>
           </div>
