@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCadRouteImport } from './routes/_authenticated.cad'
 import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
+import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
+import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,16 +41,31 @@ const AuthenticatedCadIndexRoute = AuthenticatedCadIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedCadRoute,
 } as any)
+const AuthenticatedCadBolosRoute = AuthenticatedCadBolosRouteImport.update({
+  id: '/bolos',
+  path: '/bolos',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
+const AuthenticatedCadDispatchRoute =
+  AuthenticatedCadDispatchRouteImport.update({
+    id: '/dispatch',
+    path: '/dispatch',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cad': typeof AuthenticatedCadRouteWithChildren
+  '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
   '/cad/': typeof AuthenticatedCadIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
   '/cad': typeof AuthenticatedCadIndexRoute
 }
 export interface FileRoutesById {
@@ -57,19 +74,23 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/cad': typeof AuthenticatedCadRouteWithChildren
+  '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
   '/_authenticated/cad/': typeof AuthenticatedCadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/cad' | '/cad/'
+  fullPaths: '/' | '/auth' | '/cad' | '/cad/bolos' | '/cad/dispatch' | '/cad/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/cad'
+  to: '/' | '/auth' | '/cad/bolos' | '/cad/dispatch' | '/cad'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/cad'
+    | '/_authenticated/cad/bolos'
+    | '/_authenticated/cad/dispatch'
     | '/_authenticated/cad/'
   fileRoutesById: FileRoutesById
 }
@@ -116,14 +137,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCadIndexRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
+    '/_authenticated/cad/bolos': {
+      id: '/_authenticated/cad/bolos'
+      path: '/bolos'
+      fullPath: '/cad/bolos'
+      preLoaderRoute: typeof AuthenticatedCadBolosRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/dispatch': {
+      id: '/_authenticated/cad/dispatch'
+      path: '/dispatch'
+      fullPath: '/cad/dispatch'
+      preLoaderRoute: typeof AuthenticatedCadDispatchRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
   }
 }
 
 interface AuthenticatedCadRouteChildren {
+  AuthenticatedCadBolosRoute: typeof AuthenticatedCadBolosRoute
+  AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
   AuthenticatedCadIndexRoute: typeof AuthenticatedCadIndexRoute
 }
 
 const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
+  AuthenticatedCadBolosRoute: AuthenticatedCadBolosRoute,
+  AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,
   AuthenticatedCadIndexRoute: AuthenticatedCadIndexRoute,
 }
 
