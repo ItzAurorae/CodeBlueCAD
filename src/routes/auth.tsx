@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Loader2, Mail, Shield, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +42,14 @@ function AuthPage() {
     if (!loading && session) navigate({ to: "/cad/dispatch", replace: true });
   }, [loading, session, navigate]);
 
+  useEffect(() => {
+    const message = new URLSearchParams(window.location.search).get("discord_error");
+    if (message) {
+      toast.error(message);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -74,17 +81,9 @@ function AuthPage() {
     }
   }
 
-  async function handleGoogle() {
+  function handleDiscord() {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      setBusy(false);
-      toast.error("Google sign-in failed. Please try again.");
-      return;
-    }
-    if (result.redirected) return;
+    window.location.href = "/api/public/discord/start";
   }
 
   return (
@@ -239,15 +238,24 @@ function AuthPage() {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={handleGoogle}
+                onClick={handleDiscord}
                 disabled={busy}
               >
-                Continue with Google
+                <DiscordIcon className="size-4" />
+                Continue with Discord
               </Button>
             </>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+function DiscordIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M20.317 4.369A19.79 19.79 0 0 0 15.438 3a13.9 13.9 0 0 0-.617 1.27 18.4 18.4 0 0 0-5.65 0A13.9 13.9 0 0 0 8.552 3 19.74 19.74 0 0 0 3.67 4.371C.556 8.98-.286 13.474.135 17.906a19.9 19.9 0 0 0 5.993 3.04c.472-.65.892-1.34 1.253-2.065a12.9 12.9 0 0 1-1.972-.95c.166-.122.328-.25.484-.38a14.2 14.2 0 0 0 12.214 0c.158.135.32.262.484.38a12.9 12.9 0 0 1-1.975.95c.36.724.78 1.414 1.252 2.064a19.85 19.85 0 0 0 5.997-3.039c.5-5.123-.844-9.578-3.548-13.537ZM8.02 15.207c-1.183 0-2.157-1.086-2.157-2.42 0-1.334.955-2.42 2.157-2.42 1.21 0 2.176 1.096 2.157 2.42 0 1.334-.955 2.42-2.157 2.42Zm7.96 0c-1.183 0-2.157-1.086-2.157-2.42 0-1.334.955-2.42 2.157-2.42 1.21 0 2.176 1.096 2.157 2.42 0 1.334-.947 2.42-2.157 2.42Z" />
+    </svg>
   );
 }
