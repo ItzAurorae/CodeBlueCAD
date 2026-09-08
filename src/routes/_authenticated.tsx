@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { CadProvider } from "@/lib/cad";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -24,5 +25,9 @@ function AuthenticatedLayout() {
     );
   }
 
-  return <Outlet />;
+  return (
+    <CadProvider>
+      <Outlet />
+    </CadProvider>
+  );
 }
