@@ -14,13 +14,462 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bolos: {
+        Row: {
+          community_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          kind: string
+          plate: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          plate?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          plate?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bolos_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      calls: {
+        Row: {
+          assigned_units: string[]
+          code: string
+          community_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          location: string
+          priority: number
+          status: string
+          title: string
+        }
+        Insert: {
+          assigned_units?: string[]
+          code?: string
+          community_id: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          location?: string
+          priority?: number
+          status?: string
+          title: string
+        }
+        Update: {
+          assigned_units?: string[]
+          code?: string
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          location?: string
+          priority?: number
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calls_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      citations: {
+        Row: {
+          civilian_name: string
+          community_id: string
+          created_at: string
+          created_by: string
+          fine: number
+          id: string
+          notes: string | null
+          officer_name: string | null
+          violation: string
+        }
+        Insert: {
+          civilian_name: string
+          community_id: string
+          created_at?: string
+          created_by?: string
+          fine?: number
+          id?: string
+          notes?: string | null
+          officer_name?: string | null
+          violation: string
+        }
+        Update: {
+          civilian_name?: string
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          fine?: number
+          id?: string
+          notes?: string | null
+          officer_name?: string | null
+          violation?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citations_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      civilians: {
+        Row: {
+          address: string | null
+          community_id: string
+          created_at: string
+          created_by: string
+          dob: string | null
+          first_name: string
+          gender: string | null
+          id: string
+          last_name: string
+          license_status: string
+          notes: string | null
+        }
+        Insert: {
+          address?: string | null
+          community_id: string
+          created_at?: string
+          created_by?: string
+          dob?: string | null
+          first_name: string
+          gender?: string | null
+          id?: string
+          last_name: string
+          license_status?: string
+          notes?: string | null
+        }
+        Update: {
+          address?: string | null
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          dob?: string | null
+          first_name?: string
+          gender?: string | null
+          id?: string
+          last_name?: string
+          license_status?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "civilians_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      communities: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      community_members: {
+        Row: {
+          callsign: string
+          community_id: string
+          created_at: string
+          department: string
+          id: string
+          rank: string
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          callsign?: string
+          community_id: string
+          created_at?: string
+          department?: string
+          id?: string
+          rank?: string
+          role?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          callsign?: string
+          community_id?: string
+          created_at?: string
+          department?: string
+          id?: string
+          rank?: string
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_members_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      incidents: {
+        Row: {
+          community_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          involved: string | null
+          officer_name: string | null
+          title: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          involved?: string | null
+          officer_name?: string | null
+          title: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          involved?: string | null
+          officer_name?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string
+          id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          color: string | null
+          community_id: string
+          created_at: string
+          created_by: string
+          id: string
+          insurance: string
+          model: string | null
+          owner_name: string | null
+          plate: string
+          registration: string
+          stolen: boolean
+        }
+        Insert: {
+          color?: string | null
+          community_id: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          insurance?: string
+          model?: string | null
+          owner_name?: string | null
+          plate: string
+          registration?: string
+          stolen?: boolean
+        }
+        Update: {
+          color?: string | null
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          insurance?: string
+          model?: string | null
+          owner_name?: string | null
+          plate?: string
+          registration?: string
+          stolen?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warrants: {
+        Row: {
+          community_id: string
+          created_at: string
+          created_by: string
+          id: string
+          reason: string | null
+          status: string
+          subject_name: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          reason?: string | null
+          status?: string
+          subject_name: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          reason?: string | null
+          status?: string
+          subject_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warrants_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weapons: {
+        Row: {
+          community_id: string
+          created_at: string
+          created_by: string
+          id: string
+          registered_to: string | null
+          serial: string
+          status: string
+          type: string | null
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          registered_to?: string | null
+          serial: string
+          status?: string
+          type?: string | null
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          registered_to?: string | null
+          serial?: string
+          status?: string
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weapons_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_member: { Args: { _community_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
