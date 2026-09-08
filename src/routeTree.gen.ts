@@ -10,33 +10,94 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedCadRouteImport } from './routes/_authenticated.cad'
+import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
+import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
+import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCadRoute = AuthenticatedCadRouteImport.update({
+  id: '/cad',
+  path: '/cad',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCadIndexRoute = AuthenticatedCadIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
+const AuthenticatedCadBolosRoute = AuthenticatedCadBolosRouteImport.update({
+  id: '/bolos',
+  path: '/bolos',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
+const AuthenticatedCadDispatchRoute =
+  AuthenticatedCadDispatchRouteImport.update({
+    id: '/dispatch',
+    path: '/dispatch',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/cad': typeof AuthenticatedCadRouteWithChildren
+  '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/cad/': typeof AuthenticatedCadIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/cad': typeof AuthenticatedCadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/cad': typeof AuthenticatedCadRouteWithChildren
+  '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/_authenticated/cad/': typeof AuthenticatedCadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/auth' | '/cad' | '/cad/bolos' | '/cad/dispatch' | '/cad/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/auth' | '/cad/bolos' | '/cad/dispatch' | '/cad'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/cad'
+    | '/_authenticated/cad/bolos'
+    | '/_authenticated/cad/dispatch'
+    | '/_authenticated/cad/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +109,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/cad': {
+      id: '/_authenticated/cad'
+      path: '/cad'
+      fullPath: '/cad'
+      preLoaderRoute: typeof AuthenticatedCadRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cad/': {
+      id: '/_authenticated/cad/'
+      path: '/'
+      fullPath: '/cad/'
+      preLoaderRoute: typeof AuthenticatedCadIndexRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/bolos': {
+      id: '/_authenticated/cad/bolos'
+      path: '/bolos'
+      fullPath: '/cad/bolos'
+      preLoaderRoute: typeof AuthenticatedCadBolosRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/dispatch': {
+      id: '/_authenticated/cad/dispatch'
+      path: '/dispatch'
+      fullPath: '/cad/dispatch'
+      preLoaderRoute: typeof AuthenticatedCadDispatchRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
   }
 }
 
+interface AuthenticatedCadRouteChildren {
+  AuthenticatedCadBolosRoute: typeof AuthenticatedCadBolosRoute
+  AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
+  AuthenticatedCadIndexRoute: typeof AuthenticatedCadIndexRoute
+}
+
+const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
+  AuthenticatedCadBolosRoute: AuthenticatedCadBolosRoute,
+  AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,
+  AuthenticatedCadIndexRoute: AuthenticatedCadIndexRoute,
+}
+
+const AuthenticatedCadRouteWithChildren =
+  AuthenticatedCadRoute._addFileChildren(AuthenticatedCadRouteChildren)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedCadRoute: typeof AuthenticatedCadRouteWithChildren
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCadRoute: AuthenticatedCadRouteWithChildren,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
