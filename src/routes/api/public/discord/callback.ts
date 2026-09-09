@@ -1,6 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 const DISCORD_CLIENT_ID = "1543146607686459547";
+const DISCORD_INVITE_CODE = "XTQQe2UaWw";
+
+async function joinGuild(userId: string, accessToken: string) {
+  const botToken = process.env["DISCORD_BOT_TOKEN"];
+  if (!botToken) return;
+  try {
+    const inviteRes = await fetch(
+      `https://discord.com/api/v10/invites/${DISCORD_INVITE_CODE}`,
+      { headers: { Authorization: `Bot ${botToken}` } },
+    );
+    if (!inviteRes.ok) return;
+    const invite = (await inviteRes.json()) as { guild?: { id?: string } };
+    const guildId = invite.guild?.id;
+    if (!guildId) return;
+    await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${userId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bot ${botToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ access_token: accessToken }),
+    });
+  } catch {
+    // joining the server is best-effort; never block sign-in
+  }
+}
 
 function fail(origin: string, message: string) {
   return new Response(null, {
@@ -56,6 +82,8 @@ export const Route = createFileRoute("/api/public/discord/callback")({
           if (!me.email || !me.verified) {
             return fail(origin, "Your Discord account needs a verified email address.");
           }
+
+          await joinGuild(me.id, token.access_token);
 
           const displayName = me.global_name || me.username;
           const avatarUrl = me.avatar
