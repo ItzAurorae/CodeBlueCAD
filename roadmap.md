@@ -1,23 +1,18 @@
 # CodeBlueCAD rebuild roadmap
 
-Source: Softgen project "CodeBlueCAD" (dark CAD terminal for police/EMS/fire).
-
 ## Done
-- [x] Database: profiles, communities, community_members, calls, bolos, civilians, vehicles, weapons, warrants, citations, incidents (+ RLS scoped to community membership)
-- [x] Dark design system (Space Grotesk / DM Sans, cyan-blue accent)
-- [x] Landing page `/`
-- [x] Auth page `/auth` (email + Google)
+- [x] Database: profiles, communities, community_members, calls, bolos, civilians, vehicles, weapons, warrants, citations, incidents (+ RLS)
+- [x] Dark design system, landing page, auth (email + Discord)
 - [x] Auth gate + community context
+- [x] Dispatch board `/cad/dispatch`, BOLOs `/cad/bolos`
+- [x] Records `/cad/records` (civilians, vehicles, firearms, warrants)
+- [x] Citations `/cad/citations`, Incidents `/cad/incidents`
+- [x] Unit status roster `/cad/units` (realtime)
+- [x] Communities `/communities` (create, join by code, switch)
+- [x] Settings `/settings` (display name, callsign, rank, department)
+- [x] Legal pages `/privacy` `/terms` `/security`
 
-## Pages to build (from user's route list)
-- [ ] `/dashboard` — live dispatch board
-- [ ] `/dashboard/community/$slug` — community overview by code
-- [ ] `/police` `/ems` `/fire` `/dot` `/judge` — department terminals
-- [ ] `/members` — unit status roster
-- [ ] `/communities`, `/community/join`, `/community/admin`, `/community/$id/invite`
-- [ ] `/settings` — profile, callsign, department
-- [ ] `/privacy` `/terms` `/security` `/api-docs` `/403` `/404`
-
-## Notes
-- Discord sign-in from the original is not available; using email + Google.
-- `/:id/:department` from the original list is covered by the named department routes.
+## Open
+- [ ] Department-specific terminals (police/ems/fire/dot/judge) — currently one CAD terminal with a department field per unit
+- [ ] Community admin tools (promote/remove members, invite links)
+- [ ] `/api-docs` public API reference

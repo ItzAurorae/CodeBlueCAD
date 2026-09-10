@@ -58,7 +58,7 @@ export function CadProvider({ children }: { children: ReactNode }) {
 
   const active = useMemo(() => {
     if (!memberships.length) return null;
-    return memberships.find((m) => m.community_id === activeId) ?? memberships[0];
+    return memberships.find((m) => m.community_id === activeId) ?? memberships[0] ?? null;
   }, [memberships, activeId]);
 
   const value: CadValue = {

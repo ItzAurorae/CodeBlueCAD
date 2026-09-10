@@ -12,11 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedCadRouteImport } from './routes/_authenticated.cad'
+import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenticated.communities'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthDiscordRouteImport } from './routes/auth.discord'
 import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
 import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
+import { Route as AuthenticatedCadCitationsRouteImport } from './routes/_authenticated.cad.citations'
 import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
+import { Route as AuthenticatedCadIncidentsRouteImport } from './routes/_authenticated.cad.incidents'
+import { Route as AuthenticatedCadRecordsRouteImport } from './routes/_authenticated.cad.records'
+import { Route as AuthenticatedCadUnitsRouteImport } from './routes/_authenticated.cad.units'
 import { Route as ApiPublicDiscordCallbackRouteImport } from './routes/api/public/discord/callback'
 import { Route as ApiPublicDiscordStartRouteImport } from './routes/api/public/discord/start'
 
@@ -34,9 +43,35 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedCadRoute = AuthenticatedCadRouteImport.update({
   id: '/cad',
   path: '/cad',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCommunitiesRoute =
+  AuthenticatedCommunitiesRouteImport.update({
+    id: '/communities',
+    path: '/communities',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthDiscordRoute = AuthDiscordRouteImport.update({
@@ -54,12 +89,34 @@ const AuthenticatedCadBolosRoute = AuthenticatedCadBolosRouteImport.update({
   path: '/bolos',
   getParentRoute: () => AuthenticatedCadRoute,
 } as any)
+const AuthenticatedCadCitationsRoute =
+  AuthenticatedCadCitationsRouteImport.update({
+    id: '/citations',
+    path: '/citations',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
 const AuthenticatedCadDispatchRoute =
   AuthenticatedCadDispatchRouteImport.update({
     id: '/dispatch',
     path: '/dispatch',
     getParentRoute: () => AuthenticatedCadRoute,
   } as any)
+const AuthenticatedCadIncidentsRoute =
+  AuthenticatedCadIncidentsRouteImport.update({
+    id: '/incidents',
+    path: '/incidents',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
+const AuthenticatedCadRecordsRoute = AuthenticatedCadRecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
+const AuthenticatedCadUnitsRoute = AuthenticatedCadUnitsRouteImport.update({
+  id: '/units',
+  path: '/units',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
 const ApiPublicDiscordCallbackRoute =
   ApiPublicDiscordCallbackRouteImport.update({
     id: '/api/public/discord/callback',
@@ -75,10 +132,19 @@ const ApiPublicDiscordStartRoute = ApiPublicDiscordStartRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
+  '/privacy': typeof PrivacyRoute
+  '/security': typeof SecurityRoute
+  '/terms': typeof TermsRoute
   '/cad': typeof AuthenticatedCadRouteWithChildren
+  '/communities': typeof AuthenticatedCommunitiesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/cad/records': typeof AuthenticatedCadRecordsRoute
+  '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad/': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
@@ -86,9 +152,18 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
+  '/privacy': typeof PrivacyRoute
+  '/security': typeof SecurityRoute
+  '/terms': typeof TermsRoute
+  '/communities': typeof AuthenticatedCommunitiesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/cad/records': typeof AuthenticatedCadRecordsRoute
+  '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
@@ -98,10 +173,19 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/privacy': typeof PrivacyRoute
+  '/security': typeof SecurityRoute
+  '/terms': typeof TermsRoute
   '/_authenticated/cad': typeof AuthenticatedCadRouteWithChildren
+  '/_authenticated/communities': typeof AuthenticatedCommunitiesRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/_authenticated/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/_authenticated/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/_authenticated/cad/records': typeof AuthenticatedCadRecordsRoute
+  '/_authenticated/cad/units': typeof AuthenticatedCadUnitsRoute
   '/_authenticated/cad/': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
@@ -111,10 +195,19 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/privacy'
+    | '/security'
+    | '/terms'
     | '/cad'
+    | '/communities'
+    | '/settings'
     | '/auth/discord'
     | '/cad/bolos'
+    | '/cad/citations'
     | '/cad/dispatch'
+    | '/cad/incidents'
+    | '/cad/records'
+    | '/cad/units'
     | '/cad/'
     | '/api/public/discord/callback'
     | '/api/public/discord/start'
@@ -122,9 +215,18 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/privacy'
+    | '/security'
+    | '/terms'
+    | '/communities'
+    | '/settings'
     | '/auth/discord'
     | '/cad/bolos'
+    | '/cad/citations'
     | '/cad/dispatch'
+    | '/cad/incidents'
+    | '/cad/records'
+    | '/cad/units'
     | '/cad'
     | '/api/public/discord/callback'
     | '/api/public/discord/start'
@@ -133,10 +235,19 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/privacy'
+    | '/security'
+    | '/terms'
     | '/_authenticated/cad'
+    | '/_authenticated/communities'
+    | '/_authenticated/settings'
     | '/auth/discord'
     | '/_authenticated/cad/bolos'
+    | '/_authenticated/cad/citations'
     | '/_authenticated/cad/dispatch'
+    | '/_authenticated/cad/incidents'
+    | '/_authenticated/cad/records'
+    | '/_authenticated/cad/units'
     | '/_authenticated/cad/'
     | '/api/public/discord/callback'
     | '/api/public/discord/start'
@@ -146,6 +257,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  PrivacyRoute: typeof PrivacyRoute
+  SecurityRoute: typeof SecurityRoute
+  TermsRoute: typeof TermsRoute
   ApiPublicDiscordCallbackRoute: typeof ApiPublicDiscordCallbackRoute
   ApiPublicDiscordStartRoute: typeof ApiPublicDiscordStartRoute
 }
@@ -173,11 +287,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/cad': {
       id: '/_authenticated/cad'
       path: '/cad'
       fullPath: '/cad'
       preLoaderRoute: typeof AuthenticatedCadRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/communities': {
+      id: '/_authenticated/communities'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof AuthenticatedCommunitiesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/auth/discord': {
@@ -201,11 +350,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCadBolosRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
+    '/_authenticated/cad/citations': {
+      id: '/_authenticated/cad/citations'
+      path: '/citations'
+      fullPath: '/cad/citations'
+      preLoaderRoute: typeof AuthenticatedCadCitationsRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
     '/_authenticated/cad/dispatch': {
       id: '/_authenticated/cad/dispatch'
       path: '/dispatch'
       fullPath: '/cad/dispatch'
       preLoaderRoute: typeof AuthenticatedCadDispatchRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/incidents': {
+      id: '/_authenticated/cad/incidents'
+      path: '/incidents'
+      fullPath: '/cad/incidents'
+      preLoaderRoute: typeof AuthenticatedCadIncidentsRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/records': {
+      id: '/_authenticated/cad/records'
+      path: '/records'
+      fullPath: '/cad/records'
+      preLoaderRoute: typeof AuthenticatedCadRecordsRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/units': {
+      id: '/_authenticated/cad/units'
+      path: '/units'
+      fullPath: '/cad/units'
+      preLoaderRoute: typeof AuthenticatedCadUnitsRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
     '/api/public/discord/callback': {
@@ -227,13 +404,21 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedCadRouteChildren {
   AuthenticatedCadBolosRoute: typeof AuthenticatedCadBolosRoute
+  AuthenticatedCadCitationsRoute: typeof AuthenticatedCadCitationsRoute
   AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
+  AuthenticatedCadIncidentsRoute: typeof AuthenticatedCadIncidentsRoute
+  AuthenticatedCadRecordsRoute: typeof AuthenticatedCadRecordsRoute
+  AuthenticatedCadUnitsRoute: typeof AuthenticatedCadUnitsRoute
   AuthenticatedCadIndexRoute: typeof AuthenticatedCadIndexRoute
 }
 
 const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
   AuthenticatedCadBolosRoute: AuthenticatedCadBolosRoute,
+  AuthenticatedCadCitationsRoute: AuthenticatedCadCitationsRoute,
   AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,
+  AuthenticatedCadIncidentsRoute: AuthenticatedCadIncidentsRoute,
+  AuthenticatedCadRecordsRoute: AuthenticatedCadRecordsRoute,
+  AuthenticatedCadUnitsRoute: AuthenticatedCadUnitsRoute,
   AuthenticatedCadIndexRoute: AuthenticatedCadIndexRoute,
 }
 
@@ -242,10 +427,14 @@ const AuthenticatedCadRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedCadRoute: typeof AuthenticatedCadRouteWithChildren
+  AuthenticatedCommunitiesRoute: typeof AuthenticatedCommunitiesRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCadRoute: AuthenticatedCadRouteWithChildren,
+  AuthenticatedCommunitiesRoute: AuthenticatedCommunitiesRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -266,6 +455,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  PrivacyRoute: PrivacyRoute,
+  SecurityRoute: SecurityRoute,
+  TermsRoute: TermsRoute,
   ApiPublicDiscordCallbackRoute: ApiPublicDiscordCallbackRoute,
   ApiPublicDiscordStartRoute: ApiPublicDiscordStartRoute,
 }
