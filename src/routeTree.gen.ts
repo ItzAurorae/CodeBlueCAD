@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCadRouteImport } from './routes/_authenticated.cad'
+import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenticated.communities'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthDiscordRouteImport } from './routes/auth.discord'
 import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
 import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
@@ -41,6 +43,17 @@ const AuthRoute = AuthRouteImport.update({
 const AuthenticatedCadRoute = AuthenticatedCadRouteImport.update({
   id: '/cad',
   path: '/cad',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCommunitiesRoute =
+  AuthenticatedCommunitiesRouteImport.update({
+    id: '/communities',
+    path: '/communities',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthDiscordRoute = AuthDiscordRouteImport.update({
@@ -102,6 +115,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/cad': typeof AuthenticatedCadRouteWithChildren
+  '/communities': typeof AuthenticatedCommunitiesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/cad/citations': typeof AuthenticatedCadCitationsRoute
@@ -116,6 +131,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
+  '/communities': typeof AuthenticatedCommunitiesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/cad/citations': typeof AuthenticatedCadCitationsRoute
@@ -133,6 +150,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/cad': typeof AuthenticatedCadRouteWithChildren
+  '/_authenticated/communities': typeof AuthenticatedCommunitiesRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
   '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/_authenticated/cad/citations': typeof AuthenticatedCadCitationsRoute
@@ -150,6 +169,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cad'
+    | '/communities'
+    | '/settings'
     | '/auth/discord'
     | '/cad/bolos'
     | '/cad/citations'
@@ -164,6 +185,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/communities'
+    | '/settings'
     | '/auth/discord'
     | '/cad/bolos'
     | '/cad/citations'
@@ -180,6 +203,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/cad'
+    | '/_authenticated/communities'
+    | '/_authenticated/settings'
     | '/auth/discord'
     | '/_authenticated/cad/bolos'
     | '/_authenticated/cad/citations'
@@ -228,6 +253,20 @@ declare module '@tanstack/react-router' {
       path: '/cad'
       fullPath: '/cad'
       preLoaderRoute: typeof AuthenticatedCadRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/communities': {
+      id: '/_authenticated/communities'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof AuthenticatedCommunitiesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/auth/discord': {
@@ -328,10 +367,14 @@ const AuthenticatedCadRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedCadRoute: typeof AuthenticatedCadRouteWithChildren
+  AuthenticatedCommunitiesRoute: typeof AuthenticatedCommunitiesRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCadRoute: AuthenticatedCadRouteWithChildren,
+  AuthenticatedCommunitiesRoute: AuthenticatedCommunitiesRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
