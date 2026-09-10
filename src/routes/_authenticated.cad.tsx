@@ -7,6 +7,7 @@ import {
   FileText,
   LogOut,
   Radio,
+  Settings,
   Shield,
   TriangleAlert,
   Users,
@@ -36,6 +37,7 @@ const nav = [
   { to: "/cad/citations", label: "Citations", icon: FileText },
   { to: "/cad/incidents", label: "Incidents", icon: BadgeCheck },
   { to: "/cad/units", label: "Units", icon: Users },
+  { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 function CadLayout() {
