@@ -16,7 +16,11 @@ import { Route as AuthenticatedCadRouteImport } from './routes/_authenticated.ca
 import { Route as AuthDiscordRouteImport } from './routes/auth.discord'
 import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
 import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
+import { Route as AuthenticatedCadCitationsRouteImport } from './routes/_authenticated.cad.citations'
 import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
+import { Route as AuthenticatedCadIncidentsRouteImport } from './routes/_authenticated.cad.incidents'
+import { Route as AuthenticatedCadRecordsRouteImport } from './routes/_authenticated.cad.records'
+import { Route as AuthenticatedCadUnitsRouteImport } from './routes/_authenticated.cad.units'
 import { Route as ApiPublicDiscordCallbackRouteImport } from './routes/api/public/discord/callback'
 import { Route as ApiPublicDiscordStartRouteImport } from './routes/api/public/discord/start'
 
@@ -54,12 +58,34 @@ const AuthenticatedCadBolosRoute = AuthenticatedCadBolosRouteImport.update({
   path: '/bolos',
   getParentRoute: () => AuthenticatedCadRoute,
 } as any)
+const AuthenticatedCadCitationsRoute =
+  AuthenticatedCadCitationsRouteImport.update({
+    id: '/citations',
+    path: '/citations',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
 const AuthenticatedCadDispatchRoute =
   AuthenticatedCadDispatchRouteImport.update({
     id: '/dispatch',
     path: '/dispatch',
     getParentRoute: () => AuthenticatedCadRoute,
   } as any)
+const AuthenticatedCadIncidentsRoute =
+  AuthenticatedCadIncidentsRouteImport.update({
+    id: '/incidents',
+    path: '/incidents',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
+const AuthenticatedCadRecordsRoute = AuthenticatedCadRecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
+const AuthenticatedCadUnitsRoute = AuthenticatedCadUnitsRouteImport.update({
+  id: '/units',
+  path: '/units',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
 const ApiPublicDiscordCallbackRoute =
   ApiPublicDiscordCallbackRouteImport.update({
     id: '/api/public/discord/callback',
@@ -78,7 +104,11 @@ export interface FileRoutesByFullPath {
   '/cad': typeof AuthenticatedCadRouteWithChildren
   '/auth/discord': typeof AuthDiscordRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/cad/records': typeof AuthenticatedCadRecordsRoute
+  '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad/': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
@@ -88,7 +118,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/auth/discord': typeof AuthDiscordRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/cad/records': typeof AuthenticatedCadRecordsRoute
+  '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
@@ -101,7 +135,11 @@ export interface FileRoutesById {
   '/_authenticated/cad': typeof AuthenticatedCadRouteWithChildren
   '/auth/discord': typeof AuthDiscordRoute
   '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
+  '/_authenticated/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
+  '/_authenticated/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/_authenticated/cad/records': typeof AuthenticatedCadRecordsRoute
+  '/_authenticated/cad/units': typeof AuthenticatedCadUnitsRoute
   '/_authenticated/cad/': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
@@ -114,7 +152,11 @@ export interface FileRouteTypes {
     | '/cad'
     | '/auth/discord'
     | '/cad/bolos'
+    | '/cad/citations'
     | '/cad/dispatch'
+    | '/cad/incidents'
+    | '/cad/records'
+    | '/cad/units'
     | '/cad/'
     | '/api/public/discord/callback'
     | '/api/public/discord/start'
@@ -124,7 +166,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/auth/discord'
     | '/cad/bolos'
+    | '/cad/citations'
     | '/cad/dispatch'
+    | '/cad/incidents'
+    | '/cad/records'
+    | '/cad/units'
     | '/cad'
     | '/api/public/discord/callback'
     | '/api/public/discord/start'
@@ -136,7 +182,11 @@ export interface FileRouteTypes {
     | '/_authenticated/cad'
     | '/auth/discord'
     | '/_authenticated/cad/bolos'
+    | '/_authenticated/cad/citations'
     | '/_authenticated/cad/dispatch'
+    | '/_authenticated/cad/incidents'
+    | '/_authenticated/cad/records'
+    | '/_authenticated/cad/units'
     | '/_authenticated/cad/'
     | '/api/public/discord/callback'
     | '/api/public/discord/start'
@@ -201,11 +251,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCadBolosRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
+    '/_authenticated/cad/citations': {
+      id: '/_authenticated/cad/citations'
+      path: '/citations'
+      fullPath: '/cad/citations'
+      preLoaderRoute: typeof AuthenticatedCadCitationsRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
     '/_authenticated/cad/dispatch': {
       id: '/_authenticated/cad/dispatch'
       path: '/dispatch'
       fullPath: '/cad/dispatch'
       preLoaderRoute: typeof AuthenticatedCadDispatchRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/incidents': {
+      id: '/_authenticated/cad/incidents'
+      path: '/incidents'
+      fullPath: '/cad/incidents'
+      preLoaderRoute: typeof AuthenticatedCadIncidentsRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/records': {
+      id: '/_authenticated/cad/records'
+      path: '/records'
+      fullPath: '/cad/records'
+      preLoaderRoute: typeof AuthenticatedCadRecordsRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
+    '/_authenticated/cad/units': {
+      id: '/_authenticated/cad/units'
+      path: '/units'
+      fullPath: '/cad/units'
+      preLoaderRoute: typeof AuthenticatedCadUnitsRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
     '/api/public/discord/callback': {
@@ -227,13 +305,21 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedCadRouteChildren {
   AuthenticatedCadBolosRoute: typeof AuthenticatedCadBolosRoute
+  AuthenticatedCadCitationsRoute: typeof AuthenticatedCadCitationsRoute
   AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
+  AuthenticatedCadIncidentsRoute: typeof AuthenticatedCadIncidentsRoute
+  AuthenticatedCadRecordsRoute: typeof AuthenticatedCadRecordsRoute
+  AuthenticatedCadUnitsRoute: typeof AuthenticatedCadUnitsRoute
   AuthenticatedCadIndexRoute: typeof AuthenticatedCadIndexRoute
 }
 
 const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
   AuthenticatedCadBolosRoute: AuthenticatedCadBolosRoute,
+  AuthenticatedCadCitationsRoute: AuthenticatedCadCitationsRoute,
   AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,
+  AuthenticatedCadIncidentsRoute: AuthenticatedCadIncidentsRoute,
+  AuthenticatedCadRecordsRoute: AuthenticatedCadRecordsRoute,
+  AuthenticatedCadUnitsRoute: AuthenticatedCadUnitsRoute,
   AuthenticatedCadIndexRoute: AuthenticatedCadIndexRoute,
 }
 
