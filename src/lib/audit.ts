@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useAuth } from "@/lib/auth";
 import { useCad } from "@/lib/cad";
 
@@ -35,10 +36,10 @@ export type AuditAction =
 
 export type AuditEntry = {
   action: AuditAction;
-  entityType?: string;
-  entityId?: string;
-  details?: Record<string, unknown>;
-  communityId?: string | null;
+  entityType?: string | undefined;
+  entityId?: string | undefined;
+  details?: Record<string, unknown> | undefined;
+  communityId?: string | null | undefined;
 };
 
 /**
@@ -59,7 +60,7 @@ export function useAuditLogger() {
         action: entry.action,
         entity_type: entry.entityType ?? null,
         entity_id: entry.entityId ?? null,
-        details: entry.details ?? null,
+        details: (entry.details ?? null) as Json,
       });
       if (error) {
         console.error("[audit] Failed to log:", error.message);
