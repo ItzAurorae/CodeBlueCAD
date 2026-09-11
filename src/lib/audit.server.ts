@@ -1,18 +1,19 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import type { Json } from "@/integrations/supabase/types";
 
 const WEBHOOK_URL =
   "https://discord.com/api/webhooks/1543355327070867582/dKJwXqydC220qb3mowNtxCx5YivEFsaX_ZmqV0JgfXTVvrLhbgxHHCTH7qnnEOD6lxGv";
 
 type ServerAuditEntry = {
-  community_id?: string | null;
-  user_id?: string | null;
-  actor_email?: string | null;
-  actor_callsign?: string | null;
+  community_id?: string | null | undefined;
+  user_id?: string | null | undefined;
+  actor_email?: string | null | undefined;
+  actor_callsign?: string | null | undefined;
   action: string;
-  entity_type?: string | null;
-  entity_id?: string | null;
-  details?: Record<string, unknown> | null;
-  ip_address?: string | null;
+  entity_type?: string | null | undefined;
+  entity_id?: string | null | undefined;
+  details?: Record<string, unknown> | null | undefined;
+  ip_address?: string | null | undefined;
 };
 
 const EMOJI_MAP: Record<string, string> = {
@@ -48,7 +49,7 @@ export async function logServerAudit(entry: ServerAuditEntry): Promise<void> {
       action: entry.action,
       entity_type: entry.entity_type ?? null,
       entity_id: entry.entity_id ?? null,
-      details: entry.details ?? null,
+      details: (entry.details ?? null) as Json,
       ip_address: entry.ip_address ?? null,
     });
     if (error) {
