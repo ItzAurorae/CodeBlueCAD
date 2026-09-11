@@ -368,18 +368,30 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          discord_avatar_url: string | null
+          discord_id: string | null
+          discord_linked_at: string | null
+          discord_username: string | null
           display_name: string
           id: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          discord_avatar_url?: string | null
+          discord_id?: string | null
+          discord_linked_at?: string | null
+          discord_username?: string | null
           display_name?: string
           id: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          discord_avatar_url?: string | null
+          discord_id?: string | null
+          discord_linked_at?: string | null
+          discord_username?: string | null
           display_name?: string
           id?: string
         }
