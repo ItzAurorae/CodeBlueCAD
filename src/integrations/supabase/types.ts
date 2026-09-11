@@ -531,13 +531,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_min_role: {
-        Args: { _community_id: string; _min: string }
-        Returns: boolean
-      }
       is_member: { Args: { _community_id: string }; Returns: boolean }
-      my_role: { Args: { _community_id: string }; Returns: string }
-      role_rank: { Args: { _role: string }; Returns: number }
     }
     Enums: {
       [_ in never]: never
