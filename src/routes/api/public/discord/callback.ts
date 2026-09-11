@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { logServerAudit } from "@/lib/audit.server";
 
 const DISCORD_CLIENT_ID = "1543146607686459547";
 const DISCORD_INVITE_CODE = "XTQQe2UaWw";
@@ -80,6 +81,11 @@ export const Route = createFileRoute("/api/public/discord/callback")({
           };
 
           if (!me.email || !me.verified) {
+            void logServerAudit({
+              action: "auth.discord.fail",
+              actor_email: me.email ?? undefined,
+              details: { reason: "unverified email" },
+            });
             return fail(origin, "Your Discord account needs a verified email address.");
           }
 
@@ -137,11 +143,18 @@ export const Route = createFileRoute("/api/public/discord/callback")({
 
           const finish = new URL(`${origin}/auth/discord`);
           finish.searchParams.set("token_hash", link.data.properties.hashed_token);
+          void logServerAudit({
+            action: "auth.discord.signin",
+            user_id: userId ?? null,
+            actor_email: me.email,
+            details: { discord_username: me.username, display_name: displayName },
+          });
           return new Response(null, {
             status: 302,
             headers: { Location: finish.toString(), "Cache-Control": "no-store" },
           });
         } catch {
+          void logServerAudit({ action: "auth.discord.fail", details: { reason: "exception" } });
           return fail(origin, "Discord sign-in failed. Please try again.");
         }
       },

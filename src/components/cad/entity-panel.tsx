@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuditLogger, type AuditAction } from "@/lib/audit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,6 +48,7 @@ type Props = {
   searchKeys: string[];
   renderRow: (row: Row) => ReactNode;
   emptyLabel: string;
+  auditActionPrefix?: string;
 };
 
 function initialValues(fields: Field[]) {
@@ -69,8 +71,10 @@ export function EntityPanel({
   searchKeys,
   renderRow,
   emptyLabel,
+  auditActionPrefix,
 }: Props) {
   const queryClient = useQueryClient();
+  const logAudit = useAuditLogger();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState<Record<string, unknown>>(() => initialValues(fields));
@@ -107,6 +111,14 @@ export function EntityPanel({
       setValues(initialValues(fields));
       setOpen(false);
       toast.success(`${title} entry saved`);
+      if (auditActionPrefix) {
+        void logAudit({
+          action: `${auditActionPrefix}.create` as AuditAction,
+          entityType: table,
+          communityId,
+          details: { ...values },
+        });
+      }
     },
     onError: (error) => toast.error(error instanceof Error ? error.message : "Could not save"),
   });
@@ -116,9 +128,17 @@ export function EntityPanel({
       const { error } = await supabase.from(table as never).delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey });
       toast.success("Entry removed");
+      if (auditActionPrefix) {
+        void logAudit({
+          action: `${auditActionPrefix}.delete` as AuditAction,
+          entityType: table,
+          entityId: id,
+          communityId,
+        });
+      }
     },
   });
 

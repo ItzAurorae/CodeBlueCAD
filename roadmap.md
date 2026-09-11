@@ -11,8 +11,11 @@
 - [x] Communities `/communities` (create, join by code, switch)
 - [x] Settings `/settings` (display name, callsign, rank, department)
 - [x] Legal pages `/privacy` `/terms` `/security`
+- [x] Audit logs system — `audit_logs` table, edge function with Discord webhook forwarding, client + server audit utilities
+- [x] Audit logging integrated into auth, Discord OAuth, communities, dispatch, records, citations, incidents, settings, unit status
+- [x] Audit log viewer `/cad/audit`
+- [x] `/api-docs` public API reference
 
 ## Open
 - [ ] Department-specific terminals (police/ems/fire/dot/judge) — currently one CAD terminal with a department field per unit
 - [ ] Community admin tools (promote/remove members, invite links)
-- [ ] `/api-docs` public API reference

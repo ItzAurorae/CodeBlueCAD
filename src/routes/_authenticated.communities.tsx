@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useCad, DEPARTMENTS } from "@/lib/cad";
+import { useAuditLogger } from "@/lib/audit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +32,7 @@ function CommunitiesPage() {
   const { user } = useAuth();
   const { memberships, isLoading, refresh, setActive } = useCad();
   const navigate = useNavigate();
+  const logAudit = useAuditLogger();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -64,6 +66,13 @@ function CommunitiesPage() {
       toast.success(`Community created — join code ${data.code}`);
       setName("");
       setDescription("");
+      void logAudit({
+        action: "community.create",
+        entityType: "community",
+        entityId: data.id,
+        communityId: data.id,
+        details: { name, code: data.code },
+      });
       navigate({ to: "/cad/dispatch" });
     },
     onError: (error) =>
@@ -94,6 +103,13 @@ function CommunitiesPage() {
       setActive(data.id);
       toast.success(`Joined ${data.name}`);
       setJoinCode("");
+      void logAudit({
+        action: "community.join",
+        entityType: "community",
+        entityId: data.id,
+        communityId: data.id,
+        details: { name: data.name },
+      });
       navigate({ to: "/cad/dispatch" });
     },
     onError: (error) =>

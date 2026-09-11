@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SecurityRouteImport } from './routes/security'
@@ -20,6 +21,7 @@ import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenti
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthDiscordRouteImport } from './routes/auth.discord'
 import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
+import { Route as AuthenticatedCadAuditRouteImport } from './routes/_authenticated.cad.audit'
 import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
 import { Route as AuthenticatedCadCitationsRouteImport } from './routes/_authenticated.cad.citations'
 import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
@@ -36,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -82,6 +89,11 @@ const AuthDiscordRoute = AuthDiscordRouteImport.update({
 const AuthenticatedCadIndexRoute = AuthenticatedCadIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthenticatedCadRoute,
+} as any)
+const AuthenticatedCadAuditRoute = AuthenticatedCadAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => AuthenticatedCadRoute,
 } as any)
 const AuthenticatedCadBolosRoute = AuthenticatedCadBolosRouteImport.update({
@@ -131,6 +143,7 @@ const ApiPublicDiscordStartRoute = ApiPublicDiscordStartRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
@@ -139,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
+  '/cad/audit': typeof AuthenticatedCadAuditRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
@@ -151,6 +165,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api-docs': typeof ApiDocsRoute
   '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
@@ -158,6 +173,7 @@ export interface FileRoutesByTo {
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
+  '/cad/audit': typeof AuthenticatedCadAuditRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
@@ -172,6 +188,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/api-docs': typeof ApiDocsRoute
   '/auth': typeof AuthRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
@@ -180,6 +197,7 @@ export interface FileRoutesById {
   '/_authenticated/communities': typeof AuthenticatedCommunitiesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
+  '/_authenticated/cad/audit': typeof AuthenticatedCadAuditRoute
   '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/_authenticated/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
@@ -194,6 +212,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/api-docs'
     | '/auth'
     | '/privacy'
     | '/security'
@@ -202,6 +221,7 @@ export interface FileRouteTypes {
     | '/communities'
     | '/settings'
     | '/auth/discord'
+    | '/cad/audit'
     | '/cad/bolos'
     | '/cad/citations'
     | '/cad/dispatch'
@@ -214,6 +234,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/api-docs'
     | '/auth'
     | '/privacy'
     | '/security'
@@ -221,6 +242,7 @@ export interface FileRouteTypes {
     | '/communities'
     | '/settings'
     | '/auth/discord'
+    | '/cad/audit'
     | '/cad/bolos'
     | '/cad/citations'
     | '/cad/dispatch'
@@ -234,6 +256,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/api-docs'
     | '/auth'
     | '/privacy'
     | '/security'
@@ -242,6 +265,7 @@ export interface FileRouteTypes {
     | '/_authenticated/communities'
     | '/_authenticated/settings'
     | '/auth/discord'
+    | '/_authenticated/cad/audit'
     | '/_authenticated/cad/bolos'
     | '/_authenticated/cad/citations'
     | '/_authenticated/cad/dispatch'
@@ -256,6 +280,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ApiDocsRoute: typeof ApiDocsRoute
   AuthRoute: typeof AuthRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SecurityRoute: typeof SecurityRoute
@@ -278,6 +303,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-docs': {
+      id: '/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -343,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCadIndexRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
+    '/_authenticated/cad/audit': {
+      id: '/_authenticated/cad/audit'
+      path: '/audit'
+      fullPath: '/cad/audit'
+      preLoaderRoute: typeof AuthenticatedCadAuditRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
     '/_authenticated/cad/bolos': {
       id: '/_authenticated/cad/bolos'
       path: '/bolos'
@@ -403,6 +442,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedCadRouteChildren {
+  AuthenticatedCadAuditRoute: typeof AuthenticatedCadAuditRoute
   AuthenticatedCadBolosRoute: typeof AuthenticatedCadBolosRoute
   AuthenticatedCadCitationsRoute: typeof AuthenticatedCadCitationsRoute
   AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
@@ -413,6 +453,7 @@ interface AuthenticatedCadRouteChildren {
 }
 
 const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
+  AuthenticatedCadAuditRoute: AuthenticatedCadAuditRoute,
   AuthenticatedCadBolosRoute: AuthenticatedCadBolosRoute,
   AuthenticatedCadCitationsRoute: AuthenticatedCadCitationsRoute,
   AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,
@@ -454,6 +495,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  ApiDocsRoute: ApiDocsRoute,
   AuthRoute: AuthRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SecurityRoute: SecurityRoute,

@@ -27,6 +27,7 @@ function CitationsPage() {
         addLabel="New citation"
         emptyLabel="No citations issued yet."
         searchKeys={["civilian_name", "violation", "officer_name"]}
+        auditActionPrefix="citation"
         fields={[
           { name: "civilian_name", label: "Civilian", required: true },
           { name: "violation", label: "Violation", required: true, placeholder: "Speeding 25 over" },

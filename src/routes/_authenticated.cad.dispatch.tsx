@@ -5,6 +5,7 @@ import { Loader2, MapPin, Plus, Radio, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCad } from "@/lib/cad";
+import { useAuditLogger } from "@/lib/audit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,6 +66,7 @@ function DispatchBoard() {
   const { active } = useCad();
   const queryClient = useQueryClient();
   const communityId = active?.community_id;
+  const logAudit = useAuditLogger();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     code: "10-70",
@@ -123,6 +125,11 @@ function DispatchBoard() {
       setForm({ code: "10-70", title: "", location: "", priority: "3", description: "" });
       setOpen(false);
       toast.success("Call created");
+      void logAudit({
+        action: "call.create",
+        entityType: "call",
+        details: { code: form.code, title: form.title, priority: Number(form.priority) },
+      });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not create call"),
   });
@@ -132,7 +139,17 @@ function DispatchBoard() {
       const { error } = await supabase.from("calls").update(patch).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey });
+      if (variables.patch.status) {
+        void logAudit({
+          action: "call.update",
+          entityType: "call",
+          entityId: variables.id,
+          details: { status: variables.patch.status },
+        });
+      }
+    },
   });
 
   const removeCall = useMutation({
@@ -140,9 +157,14 @@ function DispatchBoard() {
       const { error } = await supabase.from("calls").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey });
       toast.success("Call cleared");
+      void logAudit({
+        action: "call.delete",
+        entityType: "call",
+        entityId: id,
+      });
     },
   });
 
@@ -160,6 +182,12 @@ function DispatchBoard() {
         assigned_units: next,
         status: next.length && call.status === "pending" ? "active" : call.status,
       },
+    });
+    void logAudit({
+      action: "call.assign",
+      entityType: "call",
+      entityId: call.id,
+      details: { callsign, assigned: !units.includes(callsign) },
     });
   }
 

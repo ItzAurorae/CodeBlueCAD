@@ -27,6 +27,7 @@ function IncidentsPage() {
         addLabel="New report"
         emptyLabel="No reports filed yet."
         searchKeys={["title", "involved", "officer_name", "description"]}
+        auditActionPrefix="incident"
         fields={[
           { name: "title", label: "Title", required: true, placeholder: "Armed robbery — 24/7" },
           { name: "involved", label: "Involved parties", placeholder: "John Doe, Jane Roe" },

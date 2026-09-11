@@ -27,6 +27,7 @@ function BolosPage() {
         addLabel="New BOLO"
         emptyLabel="No BOLOs on file."
         searchKeys={["title", "description", "plate", "kind", "status"]}
+        auditActionPrefix="bolo"
         fields={[
           {
             name: "kind",

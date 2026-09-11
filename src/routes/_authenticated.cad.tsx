@@ -7,6 +7,7 @@ import {
   FileText,
   LogOut,
   Radio,
+  ScrollText,
   Settings,
   Shield,
   TriangleAlert,
@@ -16,6 +17,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { UNIT_STATUSES, useCad } from "@/lib/cad";
+import { useAuditLogger } from "@/lib/audit";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -37,6 +39,7 @@ const nav = [
   { to: "/cad/citations", label: "Citations", icon: FileText },
   { to: "/cad/incidents", label: "Incidents", icon: BadgeCheck },
   { to: "/cad/units", label: "Units", icon: Users },
+  { to: "/cad/audit", label: "Audit Log", icon: ScrollText },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
@@ -45,6 +48,7 @@ function CadLayout() {
   const { active, memberships, setActive, isLoading } = useCad();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const logAudit = useAuditLogger();
 
   useEffect(() => {
     if (!isLoading && memberships.length === 0) navigate({ to: "/communities", replace: true });
@@ -62,10 +66,17 @@ function CadLayout() {
       queryClient.invalidateQueries({ queryKey: ["memberships"] });
       queryClient.invalidateQueries({ queryKey: ["units"] });
       toast.success("Unit status updated");
+      void logAudit({
+        action: "unit.status",
+        entityType: "unit",
+        entityId: active!.id,
+        details: { status },
+      });
     },
   });
 
   async function signOut() {
+    void logAudit({ action: "auth.signout" });
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
@@ -88,7 +99,17 @@ function CadLayout() {
           <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             Community
           </p>
-          <Select value={active.community_id} onValueChange={setActive}>
+          <Select
+            value={active.community_id}
+            onValueChange={(v) => {
+              setActive(v);
+              void logAudit({
+                action: "community.switch",
+                communityId: v,
+                details: { to: v },
+              });
+            }}
+          >
             <SelectTrigger aria-label="Active community">
               <SelectValue />
             </SelectTrigger>

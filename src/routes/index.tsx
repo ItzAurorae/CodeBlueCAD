@@ -215,7 +215,12 @@ function Landing() {
       <footer className="border-t border-border/70">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <span>CodeBlueCAD v1.0.0 — Emergency Services CAD Platform</span>
-          <span>Not affiliated with any government agency.</span>
+          <div className="flex items-center gap-4">
+            <Link to="/api-docs" className="hover:text-foreground">
+              API Docs
+            </Link>
+            <span>Not affiliated with any government agency.</span>
+          </div>
         </div>
       </footer>
     </div>

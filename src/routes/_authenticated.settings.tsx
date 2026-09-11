@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useCad, DEPARTMENTS } from "@/lib/cad";
+import { useAuditLogger } from "@/lib/audit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +27,7 @@ function SettingsPage() {
   const { user } = useAuth();
   const { active, refresh } = useCad();
   const queryClient = useQueryClient();
+  const logAudit = useAuditLogger();
 
   const [displayName, setDisplayName] = useState("");
   const [callsign, setCallsign] = useState("");
@@ -75,6 +77,12 @@ function SettingsPage() {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       refresh();
       toast.success("Settings saved");
+      void logAudit({
+        action: "settings.update",
+        entityType: "profile",
+        entityId: user?.id,
+        details: { display_name: displayName, callsign, rank, department },
+      });
     },
     onError: (error) => toast.error(error instanceof Error ? error.message : "Could not save"),
   });

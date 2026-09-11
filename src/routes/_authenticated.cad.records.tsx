@@ -39,6 +39,7 @@ function RecordsPage() {
             addLabel="New civilian"
             emptyLabel="No civilians on file."
             searchKeys={["first_name", "last_name", "address", "license_status"]}
+            auditActionPrefix="civilian"
             fields={[
               { name: "first_name", label: "First name", required: true },
               { name: "last_name", label: "Last name", required: true },
@@ -94,6 +95,7 @@ function RecordsPage() {
             addLabel="New vehicle"
             emptyLabel="No vehicles on file."
             searchKeys={["plate", "model", "owner_name", "color"]}
+            auditActionPrefix="vehicle"
             fields={[
               { name: "plate", label: "Plate", required: true, placeholder: "ABC-1234" },
               { name: "model", label: "Make / model", placeholder: "Bravado Buffalo" },
@@ -152,6 +154,7 @@ function RecordsPage() {
             addLabel="New firearm"
             emptyLabel="No firearms on file."
             searchKeys={["serial", "type", "registered_to", "status"]}
+            auditActionPrefix="weapon"
             fields={[
               { name: "serial", label: "Serial number", required: true },
               { name: "type", label: "Type", placeholder: "Pistol" },
@@ -190,6 +193,7 @@ function RecordsPage() {
             addLabel="New warrant"
             emptyLabel="No warrants on file."
             searchKeys={["subject_name", "reason", "status"]}
+            auditActionPrefix="warrant"
             fields={[
               { name: "subject_name", label: "Subject", required: true },
               { name: "reason", label: "Reason", type: "textarea" },
