@@ -1,4 +1,5 @@
 import { useCad, type Membership } from "@/lib/cad";
+import { useAuth } from "@/lib/auth";
 
 export type CadRole = "owner" | "admin" | "supervisor" | "officer" | "trainee";
 
@@ -62,6 +63,7 @@ export function permissionsFor(role: CadRole): Permissions {
 }
 
 export function usePermissions(): Permissions {
-  const { active, userId } = useCad();
-  return permissionsFor(effectiveRole(active, userId));
+  const { active } = useCad();
+  const { user } = useAuth();
+  return permissionsFor(effectiveRole(active, user?.id));
 }
