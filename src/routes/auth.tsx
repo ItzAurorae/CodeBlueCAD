@@ -4,7 +4,7 @@ import { Loader2, Mail, Shield, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { logAuditViaEdgeFunction } from "@/lib/audit";
+import { logAuditEvents } from "@/lib/audit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,14 +70,14 @@ function AuthPage() {
           return;
         }
         toast.success("Account created");
-        void logAuditViaEdgeFunction([
+        void logAuditEvents([
           { action: "auth.signup", details: { email, display_name: displayName || "Officer" } },
         ]);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Signed in");
-        void logAuditViaEdgeFunction([{ action: "auth.signin", details: { email } }]);
+        void logAuditEvents([{ action: "auth.signin", details: { email } }]);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");

@@ -7,7 +7,6 @@ import {
   FileText,
   LogOut,
   Radio,
-  ScrollText,
   Settings,
   Shield,
   TriangleAlert,
@@ -39,7 +38,6 @@ const nav = [
   { to: "/cad/citations", label: "Citations", icon: FileText },
   { to: "/cad/incidents", label: "Incidents", icon: BadgeCheck },
   { to: "/cad/units", label: "Units", icon: Users },
-  { to: "/cad/audit", label: "Audit Log", icon: ScrollText },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 

@@ -1,12 +1,6 @@
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import type { Json } from "@/integrations/supabase/types";
-
-const WEBHOOK_URL =
-  process.env["DISCORD_AUDIT_WEBHOOK_URL"] ??
-  "";
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1543355327070867582/dKJwXqydC220qb3mowNtxCx5YivEFsaX_ZmqV0JgfXTVvrLhbgxHHCTH7qnnEOD6lxGv";
 
 type ServerAuditEntry = {
-  community_id?: string | null | undefined;
   user_id?: string | null | undefined;
   actor_email?: string | null | undefined;
   actor_callsign?: string | null | undefined;
@@ -14,19 +8,17 @@ type ServerAuditEntry = {
   entity_type?: string | null | undefined;
   entity_id?: string | null | undefined;
   details?: Record<string, unknown> | null | undefined;
-  ip_address?: string | null | undefined;
 };
 
 const EMOJI_MAP: Record<string, string> = {
-  auth: "🔐",
-  community: "🏛️",
-  discord: "🎮",
-  system: "🔧",
+  auth: "\u{1F510}",
+  discord: "\u{1F3AE}",
+  system: "\u{1F527}",
 };
 
 function emojiFor(action: string): string {
   const prefix = action.split(".")[0] ?? "system";
-  return EMOJI_MAP[prefix] ?? "📋";
+  return EMOJI_MAP[prefix] ?? "\u{1F4CB}";
 }
 
 function colorFor(action: string): number {
@@ -37,30 +29,26 @@ function colorFor(action: string): number {
   return 0x5865f2;
 }
 
-/**
- * Log a server-side audit event: stores in the database and forwards to Discord webhook.
- */
-export async function logServerAudit(entry: ServerAuditEntry): Promise<void> {
-  try {
-    const { error } = await supabaseAdmin.from("audit_logs").insert({
-      community_id: entry.community_id ?? null,
-      user_id: entry.user_id ?? null,
-      actor_email: entry.actor_email ?? null,
-      actor_callsign: entry.actor_callsign ?? null,
-      action: entry.action,
-      entity_type: entry.entity_type ?? null,
-      entity_id: entry.entity_id ?? null,
-      details: (entry.details ?? null) as Json,
-      ip_address: entry.ip_address ?? null,
-    });
-    if (error) {
-      console.error("[audit:server] DB insert error:", error.message);
-    }
-  } catch (err) {
-    console.error("[audit:server] DB exception:", err);
-  }
+function labelFor(action: string): string {
+  const [category, verb] = action.split(".");
+  if (!verb) return category;
+  const verbMap: Record<string, string> = {
+    signin: "Sign In", signup: "Sign Up", signout: "Sign Out", fail: "Failed",
+    create: "Create", join: "Join", switch: "Switch", update: "Update",
+    delete: "Delete", assign: "Assign", status: "Status Change",
+  };
+  const categoryMap: Record<string, string> = {
+    auth: "Auth", community: "Community", call: "Call", bolo: "BOLO",
+    civilian: "Civilian", vehicle: "Vehicle", weapon: "Weapon",
+    warrant: "Warrant", citation: "Citation", incident: "Incident",
+    unit: "Unit", settings: "Settings", discord: "Discord",
+  };
+  const cat = categoryMap[category ?? ""] ?? category;
+  const v = verbMap[verb ?? ""] ?? verb;
+  return `${cat} ${v}`;
+}
 
-  // Forward to Discord webhook (best-effort)
+export async function logServerAudit(entry: ServerAuditEntry): Promise<void> {
   try {
     await sendToDiscord(entry);
   } catch (err) {
@@ -71,6 +59,7 @@ export async function logServerAudit(entry: ServerAuditEntry): Promise<void> {
 async function sendToDiscord(entry: ServerAuditEntry): Promise<void> {
   const emoji = emojiFor(entry.action);
   const color = colorFor(entry.action);
+  const label = labelFor(entry.action);
 
   const fields: { name: string; value: string; inline: boolean }[] = [];
 
@@ -80,35 +69,32 @@ async function sendToDiscord(entry: ServerAuditEntry): Promise<void> {
   if (entry.actor_email) {
     fields.push({ name: "User", value: entry.actor_email, inline: true });
   }
-  if (entry.ip_address) {
-    fields.push({ name: "IP", value: entry.ip_address, inline: true });
-  }
   if (entry.entity_type) {
     fields.push({ name: "Entity", value: entry.entity_type, inline: true });
   }
 
-  let detailsText = "";
   if (entry.details && Object.keys(entry.details).length > 0) {
     const lines = Object.entries(entry.details).map(([k, v]) => {
       const val = typeof v === "string" ? v : JSON.stringify(v);
-      const truncated = val.length > 200 ? val.slice(0, 200) + "…" : val;
+      const truncated = val.length > 200 ? val.slice(0, 200) + "\u2026" : val;
       return `${k}: ${truncated}`;
     });
-    detailsText = "```\n" + lines.join("\n") + "\n```";
+    fields.push({
+      name: "Extra",
+      value: "```\n" + lines.join("\n") + "\n```",
+      inline: false,
+    });
   }
 
   const embed: Record<string, unknown> = {
-    title: `${emoji} ${entry.action}`,
+    title: `${emoji} ${label}`,
     color,
     timestamp: new Date().toISOString(),
     fields: fields.length > 0 ? fields : undefined,
+    footer: { text: "CodeBlueCAD API Audit" },
   };
 
-  if (detailsText) {
-    embed["description"] = detailsText;
-  }
-
-  await fetch(WEBHOOK_URL, {
+  const res = await fetch(WEBHOOK_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -116,4 +102,9 @@ async function sendToDiscord(entry: ServerAuditEntry): Promise<void> {
       embeds: [embed],
     }),
   });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error(`[audit:server] Discord returned ${res.status}: ${text}`);
+  }
 }

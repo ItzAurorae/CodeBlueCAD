@@ -19,7 +19,7 @@ export const Route = createFileRoute("/api-docs")({
       {
         name: "description",
         content:
-          "Full API reference for CodeBlueCAD — endpoints, audit logging, Discord OAuth, and data schemas.",
+          "Full API reference for CodeBlueCAD — endpoints, Discord OAuth, and data schemas.",
       },
     ],
   }),
@@ -48,7 +48,7 @@ const endpoints = [
     method: "POST",
     path: "/functions/v1/audit-webhook",
     description:
-      "Accepts one or more audit entries, stores them in the audit_logs table, and forwards each entry to the Discord audit webhook as a rich embed.",
+      "Accepts one or more audit entries and forwards each to the Discord audit webhook as a rich embed.",
     auth: "Supabase anon key (Apikey header)",
     body: `{ "action": "call.create", "entity_type": "call", "details": { "title": "..." } }`,
     returns: `{ "logged": 1 }`,
@@ -104,7 +104,6 @@ const tables = [
   { name: "warrants", description: "Warrants with subject, reason, and status" },
   { name: "citations", description: "Issued citations with violation and fine amount" },
   { name: "incidents", description: "Narrative incident reports" },
-  { name: "audit_logs", description: "Immutable append-only audit trail for all actions" },
 ];
 
 function ApiDocsPage() {
@@ -130,8 +129,8 @@ function ApiDocsPage() {
       <div className="mx-auto max-w-4xl px-5 py-10 sm:py-14">
         <h1 className="font-display text-3xl font-bold">API Reference</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Complete documentation of CodeBlueCAD's API system, Discord OAuth flow, audit logging
-          infrastructure, and database schema.
+          Complete documentation of CodeBlueCAD's API system, Discord OAuth flow, audit
+          webhook integration, and database schema.
         </p>
 
         <section className="mt-10 space-y-4">
@@ -178,12 +177,12 @@ function ApiDocsPage() {
           <ol className="space-y-3">
             {[
               "User clicks 'Continue with Discord' on the sign-in page, which navigates to /api/public/discord/start.",
-              "The start endpoint redirects to Discord's OAuth consent screen with scopes: identify, email, guilds.join.",
+              "The start endpoint redirects to Discord's OAuth consent screen with scopes: identify, email.",
               "After consent, Discord redirects back to /api/public/discord/callback with an authorization code.",
               "The callback exchanges the code for a Discord access token, fetches the user's Discord profile, and verifies their email.",
-              "If valid, the server creates or updates a Supabase account, optionally joins the Discord guild via bot token, and generates a magic link session.",
+              "If valid, the server creates or updates a Supabase account, generates a magic link session, and redirects to the frontend.",
               "The user is redirected to /auth/discord with a token hash, which verifies the OTP and opens the CAD terminal.",
-              "Every step is logged to the audit system and forwarded to the Discord webhook.",
+              "Every step is logged to the Discord audit webhook.",
             ].map((step, i) => (
               <li key={i} className="flex gap-3 rounded-lg border border-border bg-card p-4">
                 <span className="font-mono text-sm text-primary">
@@ -201,9 +200,9 @@ function ApiDocsPage() {
             <h2 className="font-display text-xl font-semibold">Audit Log Actions</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Every action in CodeBlueCAD is logged to the{" "}
-            <code className="font-mono text-foreground">audit_logs</code> table and forwarded to a
-            Discord webhook in real time. Logs are immutable and append-only.
+            Every action in CodeBlueCAD is forwarded to a Discord webhook in real time as a rich
+            embed with the action label, acting user, callsign, entity details, and a timestamp.{" "}
+            
           </p>
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-sm">
@@ -247,8 +246,9 @@ function ApiDocsPage() {
           </div>
           <div className="rounded-lg border border-border bg-card p-5 space-y-3">
             <p className="text-sm text-muted-foreground">
-              Audit events are forwarded to a Discord channel webhook as rich embeds. Each embed
-              includes the action type, acting user, callsign, entity details, and a timestamp.
+              Audit events are sent to a Discord channel webhook as rich embeds. Each embed
+              includes the action label, acting user, callsign, entity details, extra fields, and
+              a timestamp — formatted professionally for at-a-glance monitoring.
             </p>
             <div className="flex flex-wrap gap-2">
               {[
