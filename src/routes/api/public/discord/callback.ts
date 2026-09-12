@@ -89,7 +89,10 @@ export const Route = createFileRoute("/api/public/discord/callback")({
             return fail(origin, "Your Discord account needs a verified email address.");
           }
 
-          await joinGuild(me.id, token.access_token);
+          // Server auto-join needs the guilds.join scope, which this app no longer requests.
+          void joinGuild;
+
+
 
           const displayName = me.global_name || me.username;
           const avatarUrl = me.avatar

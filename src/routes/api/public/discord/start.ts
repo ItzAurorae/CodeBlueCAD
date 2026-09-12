@@ -12,7 +12,7 @@ export const Route = createFileRoute("/api/public/discord/start")({
         authorize.searchParams.set("client_id", DISCORD_CLIENT_ID);
         authorize.searchParams.set("response_type", "code");
         authorize.searchParams.set("redirect_uri", redirectUri);
-        authorize.searchParams.set("scope", "identify email guilds.join");
+        authorize.searchParams.set("scope", "identify email");
         authorize.searchParams.set("prompt", "consent");
         return new Response(null, {
           status: 302,
