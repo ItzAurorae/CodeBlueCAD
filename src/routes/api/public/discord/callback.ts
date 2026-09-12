@@ -1,34 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { logServerAudit } from "@/lib/audit.server";
 
-const DISCORD_CLIENT_ID = "1543146607686459547";
-const DISCORD_INVITE_CODE = "XTQQe2UaWw";
-
-async function joinGuild(userId: string, accessToken: string) {
-  const botToken = process.env["DISCORD_BOT_TOKEN"];
-  if (!botToken) return;
-  try {
-    const inviteRes = await fetch(
-      `https://discord.com/api/v10/invites/${DISCORD_INVITE_CODE}`,
-      { headers: { Authorization: `Bot ${botToken}` } },
-    );
-    if (!inviteRes.ok) return;
-    const invite = (await inviteRes.json()) as { guild?: { id?: string } };
-    const guildId = invite.guild?.id;
-    if (!guildId) return;
-    await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${userId}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bot ${botToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ access_token: accessToken }),
-    });
-  } catch {
-    // joining the server is best-effort; never block sign-in
-  }
-}
-
 function fail(origin: string, message: string) {
   return new Response(null, {
     status: 302,
@@ -46,31 +18,53 @@ export const Route = createFileRoute("/api/public/discord/callback")({
         const url = new URL(request.url);
         const origin = url.origin;
         const code = url.searchParams.get("code");
+
         if (!code) return fail(origin, "Discord sign-in was cancelled.");
 
+        const clientId = process.env["DISCORD_CLIENT_ID"];
         const clientSecret = process.env["DISCORD_CLIENT_SECRET"];
-        if (!clientSecret) return fail(origin, "Discord sign-in is not configured yet.");
+
+        if (!clientId || !clientSecret) {
+          console.error("[discord/callback] Missing DISCORD_CLIENT_ID or DISCORD_CLIENT_SECRET");
+          return fail(origin, "Discord sign-in is not configured yet.");
+        }
+
+        const redirectUri = `${origin}/api/public/discord/callback`;
 
         try {
+          // 1. Exchange the authorization code for a Discord access token
           const tokenRes = await fetch("https://discord.com/api/oauth2/token", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({
-              client_id: DISCORD_CLIENT_ID,
+              client_id: clientId,
               client_secret: clientSecret,
               grant_type: "authorization_code",
               code,
-              redirect_uri: `${origin}/api/public/discord/callback`,
+              redirect_uri: redirectUri,
             }),
           });
-          if (!tokenRes.ok) return fail(origin, "Discord rejected the sign-in request.");
-          const token = (await tokenRes.json()) as { access_token?: string };
-          if (!token.access_token) return fail(origin, "Discord did not return a valid session.");
 
+          if (!tokenRes.ok) {
+            const errBody = await tokenRes.text();
+            console.error("[discord/callback] Token exchange failed:", tokenRes.status, errBody);
+            return fail(origin, "Discord rejected the sign-in request.");
+          }
+
+          const token = (await tokenRes.json()) as { access_token?: string };
+          if (!token.access_token) {
+            return fail(origin, "Discord did not return a valid session.");
+          }
+
+          // 2. Fetch the Discord user's profile
           const meRes = await fetch("https://discord.com/api/users/@me", {
             headers: { Authorization: `Bearer ${token.access_token}` },
           });
-          if (!meRes.ok) return fail(origin, "Could not read your Discord profile.");
+          if (!meRes.ok) {
+            console.error("[discord/callback] /users/@me failed:", meRes.status);
+            return fail(origin, "Could not read your Discord profile.");
+          }
+
           const me = (await meRes.json()) as {
             id: string;
             username: string;
@@ -89,11 +83,6 @@ export const Route = createFileRoute("/api/public/discord/callback")({
             return fail(origin, "Your Discord account needs a verified email address.");
           }
 
-          // Server auto-join needs the guilds.join scope, which this app no longer requests.
-          void joinGuild;
-
-
-
           const displayName = me.global_name || me.username;
           const avatarUrl = me.avatar
             ? `https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png?size=128`
@@ -108,32 +97,43 @@ export const Route = createFileRoute("/api/public/discord/callback")({
             discord_username: me.username,
           };
 
+          // 3. Try to generate a magic link for the user's Discord email.
+          // If the user doesn't exist yet, create them first, then generate the link.
           let link = await supabaseAdmin.auth.admin.generateLink({
             type: "magiclink",
             email: me.email,
           });
 
           if (link.error) {
+            // User doesn't exist — create them with Discord metadata
             const created = await supabaseAdmin.auth.admin.createUser({
               email: me.email,
               email_confirm: true,
               user_metadata: metadata,
             });
-            if (created.error) return fail(origin, "Could not create your account.");
+            if (created.error) {
+              console.error("[discord/callback] createUser failed:", created.error.message);
+              return fail(origin, "Could not create your account.");
+            }
+
+            // Now generate the magic link for the newly created user
             link = await supabaseAdmin.auth.admin.generateLink({
               type: "magiclink",
               email: me.email,
             });
           } else if (link.data.user) {
+            // User already exists — merge Discord metadata into their existing metadata
             await supabaseAdmin.auth.admin.updateUserById(link.data.user.id, {
               user_metadata: { ...link.data.user.user_metadata, ...metadata },
             });
           }
 
           if (link.error || !link.data.properties?.hashed_token) {
+            console.error("[discord/callback] generateLink failed:", link.error?.message);
             return fail(origin, "Could not start your session.");
           }
 
+          // 4. Upsert the profile with Discord info
           const userId = link.data.user?.id;
           if (userId) {
             await supabaseAdmin
@@ -152,20 +152,30 @@ export const Route = createFileRoute("/api/public/discord/callback")({
               );
           }
 
+          // 5. Redirect to the frontend with the hashed token to verify the OTP
           const finish = new URL(`${origin}/auth/discord`);
           finish.searchParams.set("token_hash", link.data.properties.hashed_token);
+
           void logServerAudit({
             action: "auth.discord.signin",
             user_id: userId ?? null,
             actor_email: me.email,
             details: { discord_username: me.username, display_name: displayName },
           });
+
           return new Response(null, {
             status: 302,
             headers: { Location: finish.toString(), "Cache-Control": "no-store" },
           });
-        } catch {
-          void logServerAudit({ action: "auth.discord.fail", details: { reason: "exception" } });
+        } catch (err) {
+          console.error("[discord/callback] Unexpected error:", err);
+          void logServerAudit({
+            action: "auth.discord.fail",
+            details: {
+              reason: "exception",
+              message: err instanceof Error ? err.message : "unknown",
+            },
+          });
           return fail(origin, "Discord sign-in failed. Please try again.");
         }
       },

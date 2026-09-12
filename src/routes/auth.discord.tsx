@@ -32,22 +32,46 @@ function DiscordFinishPage() {
 
   useEffect(() => {
     let cancelled = false;
+
     async function run() {
       if (!tokenHash) {
         setError("This sign-in link is incomplete. Please try again.");
         return;
       }
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        type: "magiclink",
-        token_hash: tokenHash,
-      });
-      if (cancelled) return;
-      if (verifyError) {
-        setError("That sign-in link has expired. Please sign in with Discord again.");
-        return;
+
+      try {
+        const { error: verifyError, data } = await supabase.auth.verifyOtp({
+          type: "magiclink",
+          token_hash: tokenHash,
+        });
+
+        if (cancelled) return;
+
+        if (verifyError) {
+          console.error("[auth/discord] verifyOtp error:", verifyError.message);
+          setError("That sign-in link has expired. Please sign in with Discord again.");
+          return;
+        }
+
+        // verifyOtp should establish a session. If it didn't, fall back to
+        // checking getSession before redirecting.
+        if (!data.session) {
+          const { data: sessionData } = await supabase.auth.getSession();
+          if (cancelled) return;
+          if (!sessionData.session) {
+            setError("Could not establish your session. Please try again.");
+            return;
+          }
+        }
+
+        navigate({ to: "/cad/dispatch", replace: true });
+      } catch (err) {
+        if (cancelled) return;
+        console.error("[auth/discord] Unexpected error:", err);
+        setError("Something went wrong during sign-in. Please try again.");
       }
-      navigate({ to: "/cad/dispatch", replace: true });
     }
+
     void run();
     return () => {
       cancelled = true;
