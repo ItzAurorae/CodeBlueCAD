@@ -6,8 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1543355327070867582/dKJwXqydC220qb3mowNtxCx5YivEFsaX_ZmqV0JgfXTVvrLhbgxHHCTH7qnnEOD6lxGv";
+const WEBHOOK_URL = Deno.env.get("DISCORD_AUDIT_WEBHOOK_URL") ?? "";
 
 const EMOJI_MAP: Record<string, string> = {
   auth: "🔐",
@@ -197,6 +196,11 @@ async function sendToDiscord(
     username: "CodeBlueCAD Audit",
     embeds: [embed],
   };
+
+  if (!WEBHOOK_URL) {
+    console.warn("[audit-webhook] DISCORD_AUDIT_WEBHOOK_URL not set — skipping Discord forward");
+    return;
+  }
 
   const res = await fetch(WEBHOOK_URL, {
     method: "POST",

@@ -2,7 +2,8 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { Json } from "@/integrations/supabase/types";
 
 const WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1543355327070867582/dKJwXqydC220qb3mowNtxCx5YivEFsaX_ZmqV0JgfXTVvrLhbgxHHCTH7qnnEOD6lxGv";
+  process.env["DISCORD_AUDIT_WEBHOOK_URL"] ??
+  "";
 
 type ServerAuditEntry = {
   community_id?: string | null | undefined;

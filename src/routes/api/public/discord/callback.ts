@@ -139,7 +139,15 @@ export const Route = createFileRoute("/api/public/discord/callback")({
             await supabaseAdmin
               .from("profiles")
               .upsert(
-                { id: userId, display_name: displayName, avatar_url: avatarUrl },
+                {
+                  id: userId,
+                  display_name: displayName,
+                  avatar_url: avatarUrl,
+                  discord_id: me.id,
+                  discord_username: me.username,
+                  discord_avatar_url: avatarUrl,
+                  discord_linked_at: new Date().toISOString(),
+                },
                 { onConflict: "id" },
               );
           }
