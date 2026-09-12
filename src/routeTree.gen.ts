@@ -29,6 +29,7 @@ import { Route as AuthenticatedCadIncidentsRouteImport } from './routes/_authent
 import { Route as AuthenticatedCadRecordsRouteImport } from './routes/_authenticated.cad.records'
 import { Route as AuthenticatedCadUnitsRouteImport } from './routes/_authenticated.cad.units'
 import { Route as ApiPublicDiscordCallbackRouteImport } from './routes/api/public/discord/callback'
+import { Route as ApiPublicDiscordInstallRouteImport } from './routes/api/public/discord/install'
 import { Route as ApiPublicDiscordStartRouteImport } from './routes/api/public/discord/start'
 
 const IndexRoute = IndexRouteImport.update({
@@ -135,6 +136,11 @@ const ApiPublicDiscordCallbackRoute =
     path: '/api/public/discord/callback',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicDiscordInstallRoute = ApiPublicDiscordInstallRouteImport.update({
+  id: '/api/public/discord/install',
+  path: '/api/public/discord/install',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDiscordStartRoute = ApiPublicDiscordStartRouteImport.update({
   id: '/api/public/discord/start',
   path: '/api/public/discord/start',
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad/': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
+  '/api/public/discord/install': typeof ApiPublicDiscordInstallRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
 }
 export interface FileRoutesByTo {
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
+  '/api/public/discord/install': typeof ApiPublicDiscordInstallRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
 }
 export interface FileRoutesById {
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/_authenticated/cad/units': typeof AuthenticatedCadUnitsRoute
   '/_authenticated/cad/': typeof AuthenticatedCadIndexRoute
   '/api/public/discord/callback': typeof ApiPublicDiscordCallbackRoute
+  '/api/public/discord/install': typeof ApiPublicDiscordInstallRoute
   '/api/public/discord/start': typeof ApiPublicDiscordStartRoute
 }
 export interface FileRouteTypes {
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/cad/units'
     | '/cad/'
     | '/api/public/discord/callback'
+    | '/api/public/discord/install'
     | '/api/public/discord/start'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/cad/units'
     | '/cad'
     | '/api/public/discord/callback'
+    | '/api/public/discord/install'
     | '/api/public/discord/start'
   id:
     | '__root__'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cad/units'
     | '/_authenticated/cad/'
     | '/api/public/discord/callback'
+    | '/api/public/discord/install'
     | '/api/public/discord/start'
   fileRoutesById: FileRoutesById
 }
@@ -286,6 +298,7 @@ export interface RootRouteChildren {
   SecurityRoute: typeof SecurityRoute
   TermsRoute: typeof TermsRoute
   ApiPublicDiscordCallbackRoute: typeof ApiPublicDiscordCallbackRoute
+  ApiPublicDiscordInstallRoute: typeof ApiPublicDiscordInstallRoute
   ApiPublicDiscordStartRoute: typeof ApiPublicDiscordStartRoute
 }
 
@@ -431,6 +444,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDiscordCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/discord/install': {
+      id: '/api/public/discord/install'
+      path: '/api/public/discord/install'
+      fullPath: '/api/public/discord/install'
+      preLoaderRoute: typeof ApiPublicDiscordInstallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/discord/start': {
       id: '/api/public/discord/start'
       path: '/api/public/discord/start'
@@ -501,6 +521,7 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityRoute: SecurityRoute,
   TermsRoute: TermsRoute,
   ApiPublicDiscordCallbackRoute: ApiPublicDiscordCallbackRoute,
+  ApiPublicDiscordInstallRoute: ApiPublicDiscordInstallRoute,
   ApiPublicDiscordStartRoute: ApiPublicDiscordStartRoute,
 }
 export const routeTree = rootRouteImport
