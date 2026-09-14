@@ -21,7 +21,6 @@ import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenti
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthDiscordRouteImport } from './routes/auth.discord'
 import { Route as AuthenticatedCadIndexRouteImport } from './routes/_authenticated.cad.index'
-import { Route as AuthenticatedCadAuditRouteImport } from './routes/_authenticated.cad.audit'
 import { Route as AuthenticatedCadBolosRouteImport } from './routes/_authenticated.cad.bolos'
 import { Route as AuthenticatedCadCitationsRouteImport } from './routes/_authenticated.cad.citations'
 import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
@@ -92,11 +91,6 @@ const AuthenticatedCadIndexRoute = AuthenticatedCadIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedCadRoute,
 } as any)
-const AuthenticatedCadAuditRoute = AuthenticatedCadAuditRouteImport.update({
-  id: '/audit',
-  path: '/audit',
-  getParentRoute: () => AuthenticatedCadRoute,
-} as any)
 const AuthenticatedCadBolosRoute = AuthenticatedCadBolosRouteImport.update({
   id: '/bolos',
   path: '/bolos',
@@ -158,7 +152,6 @@ export interface FileRoutesByFullPath {
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
-  '/cad/audit': typeof AuthenticatedCadAuditRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
@@ -180,7 +173,6 @@ export interface FileRoutesByTo {
   '/communities': typeof AuthenticatedCommunitiesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
-  '/cad/audit': typeof AuthenticatedCadAuditRoute
   '/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
@@ -205,7 +197,6 @@ export interface FileRoutesById {
   '/_authenticated/communities': typeof AuthenticatedCommunitiesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/auth/discord': typeof AuthDiscordRoute
-  '/_authenticated/cad/audit': typeof AuthenticatedCadAuditRoute
   '/_authenticated/cad/bolos': typeof AuthenticatedCadBolosRoute
   '/_authenticated/cad/citations': typeof AuthenticatedCadCitationsRoute
   '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
@@ -230,7 +221,6 @@ export interface FileRouteTypes {
     | '/communities'
     | '/settings'
     | '/auth/discord'
-    | '/cad/audit'
     | '/cad/bolos'
     | '/cad/citations'
     | '/cad/dispatch'
@@ -252,7 +242,6 @@ export interface FileRouteTypes {
     | '/communities'
     | '/settings'
     | '/auth/discord'
-    | '/cad/audit'
     | '/cad/bolos'
     | '/cad/citations'
     | '/cad/dispatch'
@@ -276,7 +265,6 @@ export interface FileRouteTypes {
     | '/_authenticated/communities'
     | '/_authenticated/settings'
     | '/auth/discord'
-    | '/_authenticated/cad/audit'
     | '/_authenticated/cad/bolos'
     | '/_authenticated/cad/citations'
     | '/_authenticated/cad/dispatch'
@@ -388,13 +376,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCadIndexRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
-    '/_authenticated/cad/audit': {
-      id: '/_authenticated/cad/audit'
-      path: '/audit'
-      fullPath: '/cad/audit'
-      preLoaderRoute: typeof AuthenticatedCadAuditRouteImport
-      parentRoute: typeof AuthenticatedCadRoute
-    }
     '/_authenticated/cad/bolos': {
       id: '/_authenticated/cad/bolos'
       path: '/bolos'
@@ -462,7 +443,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedCadRouteChildren {
-  AuthenticatedCadAuditRoute: typeof AuthenticatedCadAuditRoute
   AuthenticatedCadBolosRoute: typeof AuthenticatedCadBolosRoute
   AuthenticatedCadCitationsRoute: typeof AuthenticatedCadCitationsRoute
   AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
@@ -473,7 +453,6 @@ interface AuthenticatedCadRouteChildren {
 }
 
 const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
-  AuthenticatedCadAuditRoute: AuthenticatedCadAuditRoute,
   AuthenticatedCadBolosRoute: AuthenticatedCadBolosRoute,
   AuthenticatedCadCitationsRoute: AuthenticatedCadCitationsRoute,
   AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,

@@ -14,56 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      audit_logs: {
-        Row: {
-          action: string
-          actor_callsign: string | null
-          actor_email: string | null
-          community_id: string | null
-          created_at: string
-          details: Json | null
-          entity_id: string | null
-          entity_type: string | null
-          id: string
-          ip_address: string | null
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          actor_callsign?: string | null
-          actor_email?: string | null
-          community_id?: string | null
-          created_at?: string
-          details?: Json | null
-          entity_id?: string | null
-          entity_type?: string | null
-          id?: string
-          ip_address?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          actor_callsign?: string | null
-          actor_email?: string | null
-          community_id?: string | null
-          created_at?: string
-          details?: Json | null
-          entity_id?: string | null
-          entity_type?: string | null
-          id?: string
-          ip_address?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "audit_logs_community_id_fkey"
-            columns: ["community_id"]
-            isOneToOne: false
-            referencedRelation: "communities"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       bolos: {
         Row: {
           community_id: string
