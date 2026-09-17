@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 import { EntityPanel, FieldRow } from "@/components/cad/entity-panel";
 import { useCad } from "@/lib/cad";
 
@@ -51,8 +53,8 @@ function BolosPage() {
             ],
           },
         ]}
-        renderRow={(row) => (
-          <div className="space-y-2 pr-8">
+        renderRow={(row, onEdit) => (
+          <div className="space-y-2 pr-16">
             <div className="flex items-center gap-2">
               <span className="rounded bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning ring-1 ring-warning/30">
                 {String(row["kind"]).toUpperCase()}
@@ -66,6 +68,9 @@ function BolosPage() {
                 {String(row["description"])}
               </p>
             ) : null}
+            <Button variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onEdit(row)}>
+              <Pencil className="size-3.5" /> Edit
+            </Button>
           </div>
         )}
       />

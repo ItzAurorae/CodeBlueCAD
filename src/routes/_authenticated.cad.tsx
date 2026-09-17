@@ -1,16 +1,18 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  BadgeCheck,
+  LayoutDashboard,
+  Radio,
+  TriangleAlert,
   Database,
   FileText,
-  LogOut,
-  Radio,
+  BadgeCheck,
+  Users,
   Settings,
   Shield,
-  TriangleAlert,
-  Users,
+  LogOut,
+  Siren,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,6 +27,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/cad")({
   ssr: false,
@@ -32,6 +44,7 @@ export const Route = createFileRoute("/_authenticated/cad")({
 });
 
 const nav = [
+  { to: "/cad/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/cad/dispatch", label: "Dispatch", icon: Radio },
   { to: "/cad/bolos", label: "BOLOs", icon: TriangleAlert },
   { to: "/cad/records", label: "Records", icon: Database },
@@ -47,6 +60,7 @@ function CadLayout() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const logAudit = useAuditLogger();
+  const [panicOpen, setPanicOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoading && memberships.length === 0) navigate({ to: "/communities", replace: true });
@@ -60,7 +74,7 @@ function CadLayout() {
         .eq("id", active!.id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, status) => {
       queryClient.invalidateQueries({ queryKey: ["memberships"] });
       queryClient.invalidateQueries({ queryKey: ["units"] });
       toast.success("Unit status updated");
@@ -69,6 +83,28 @@ function CadLayout() {
         entityType: "unit",
         entityId: active!.id,
         details: { status },
+      });
+    },
+  });
+
+  const panic = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("community_members")
+        .update({ status: "panic" })
+        .eq("id", active!.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["memberships"] });
+      queryClient.invalidateQueries({ queryKey: ["units"] });
+      setPanicOpen(false);
+      toast.error("PANIC ACTIVATED — all units notified");
+      void logAudit({
+        action: "unit.status",
+        entityType: "unit",
+        entityId: active!.id,
+        details: { status: "panic", panic: true },
       });
     },
   });
@@ -82,6 +118,8 @@ function CadLayout() {
   }
 
   if (!active) return null;
+
+  const isPanicking = active.status === "panic";
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[248px_1fr]">
@@ -141,6 +179,53 @@ function CadLayout() {
         </nav>
 
         <div className="mt-auto space-y-3 border-t border-sidebar-border pt-4">
+          {/* Panic button */}
+          {isPanicking ? (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="w-full animate-pulse"
+              onClick={() => setStatus.mutate("available")}
+              disabled={setStatus.isPending}
+            >
+              <Siren className="size-4" /> Clear panic
+            </Button>
+          ) : (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="w-full"
+              onClick={() => setPanicOpen(true)}
+            >
+              <Siren className="size-4" /> Panic
+            </Button>
+          )}
+
+          {/* Panic confirmation */}
+          <AlertDialog open={panicOpen} onOpenChange={setPanicOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="flex items-center gap-2">
+                  <Siren className="size-5 text-destructive" /> Activate panic?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will immediately alert all units in {active.communities?.name}. Only use
+                  this in a genuine emergency.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => panic.mutate()}
+                  disabled={panic.isPending}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {panic.isPending ? "Activating…" : "Activate panic"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <div>
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
               My status

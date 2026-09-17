@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 import { EntityPanel, FieldRow } from "@/components/cad/entity-panel";
 import { useCad } from "@/lib/cad";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -68,8 +70,8 @@ function RecordsPage() {
               },
               { name: "notes", label: "Notes", type: "textarea" },
             ]}
-            renderRow={(row) => (
-              <div className="space-y-2 pr-8">
+            renderRow={(row, onEdit) => (
+              <div className="space-y-2 pr-16">
                 <h3 className="font-display text-base font-semibold">
                   {String(row["first_name"])} {String(row["last_name"])}
                 </h3>
@@ -81,6 +83,9 @@ function RecordsPage() {
                     {String(row["notes"])}
                   </p>
                 ) : null}
+                <Button variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onEdit(row)}>
+                  <Pencil className="size-3.5" /> Edit
+                </Button>
               </div>
             )}
           />
@@ -123,8 +128,8 @@ function RecordsPage() {
               },
               { name: "stolen", label: "Reported stolen", type: "switch", placeholder: "Flag this plate as stolen" },
             ]}
-            renderRow={(row) => (
-              <div className="space-y-2 pr-8">
+            renderRow={(row, onEdit) => (
+              <div className="space-y-2 pr-16">
                 <div className="flex items-center gap-2">
                   <span className="rounded bg-primary/12 px-2 py-0.5 font-mono text-xs text-primary ring-1 ring-primary/25">
                     {String(row["plate"])}
@@ -140,6 +145,9 @@ function RecordsPage() {
                 <FieldRow label="Owner" value={row["owner_name"] ? String(row["owner_name"]) : ""} />
                 <FieldRow label="Registration" value={String(row["registration"])} />
                 <FieldRow label="Insurance" value={String(row["insurance"])} />
+                <Button variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onEdit(row)}>
+                  <Pencil className="size-3.5" /> Edit
+                </Button>
               </div>
             )}
           />
@@ -170,8 +178,8 @@ function RecordsPage() {
                 ],
               },
             ]}
-            renderRow={(row) => (
-              <div className="space-y-2 pr-8">
+            renderRow={(row, onEdit) => (
+              <div className="space-y-2 pr-16">
                 <h3 className="font-mono text-base font-semibold">{String(row["serial"])}</h3>
                 <FieldRow label="Type" value={row["type"] ? String(row["type"]) : ""} />
                 <FieldRow
@@ -179,6 +187,9 @@ function RecordsPage() {
                   value={row["registered_to"] ? String(row["registered_to"]) : ""}
                 />
                 <FieldRow label="Status" value={String(row["status"])} />
+                <Button variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onEdit(row)}>
+                  <Pencil className="size-3.5" /> Edit
+                </Button>
               </div>
             )}
           />
@@ -207,8 +218,8 @@ function RecordsPage() {
                 ],
               },
             ]}
-            renderRow={(row) => (
-              <div className="space-y-2 pr-8">
+            renderRow={(row, onEdit) => (
+              <div className="space-y-2 pr-16">
                 <div className="flex items-center gap-2">
                   <span
                     className={
@@ -228,6 +239,9 @@ function RecordsPage() {
                     {String(row["reason"])}
                   </p>
                 ) : null}
+                <Button variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onEdit(row)}>
+                  <Pencil className="size-3.5" /> Edit
+                </Button>
               </div>
             )}
           />
