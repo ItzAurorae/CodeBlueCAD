@@ -13,6 +13,7 @@ import {
   Shield,
   LogOut,
   Siren,
+  Scale,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,6 +50,7 @@ const nav = [
   { to: "/cad/bolos", label: "BOLOs", icon: TriangleAlert },
   { to: "/cad/records", label: "Records", icon: Database },
   { to: "/cad/citations", label: "Citations", icon: FileText },
+  { to: "/cad/penal-codes", label: "Penal Codes", icon: Scale },
   { to: "/cad/incidents", label: "Incidents", icon: BadgeCheck },
   { to: "/cad/units", label: "Units", icon: Users },
   { to: "/settings", label: "Settings", icon: Settings },

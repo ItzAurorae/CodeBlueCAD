@@ -35,6 +35,11 @@ export type AuditAction =
   | "incident.create"
   | "incident.update"
   | "incident.delete"
+  | "penal_code.create"
+  | "penal_code.update"
+  | "penal_code.delete"
+  | "penal_code.import"
+  | "penal_code.export"
   | "unit.status"
   | "unit.update"
   | "settings.update";
@@ -83,6 +88,7 @@ function emojiFor(action: string): string {
     warrant: "\u{1F4CB}",
     citation: "\u{1F4DD}",
     incident: "\u{1F4C4}",
+    penal_code: "\u{2696}\u{FE0F}",
     unit: "\u{1F46E}",
     settings: "\u{2699}\u{FE0F}",
     discord: "\u{1F3AE}",
@@ -93,9 +99,9 @@ function emojiFor(action: string): string {
 
 function colorFor(action: string): number {
   if (action.includes("delete") || action.includes("fail")) return 0xed4245;
-  if (action.includes("create") || action.includes("signin") || action.includes("signup") || action.includes("join"))
+  if (action.includes("create") || action.includes("signin") || action.includes("signup") || action.includes("join") || action.includes("import"))
     return 0x57f287;
-  if (action.includes("update") || action.includes("signout") || action.includes("status"))
+  if (action.includes("update") || action.includes("signout") || action.includes("status") || action.includes("export"))
     return 0xfee75c;
   return 0x5865f2;
 }
@@ -107,12 +113,13 @@ function labelFor(action: string): string {
     signin: "Sign In", signup: "Sign Up", signout: "Sign Out", fail: "Failed",
     create: "Create", join: "Join", switch: "Switch", update: "Update",
     delete: "Delete", assign: "Assign", status: "Status Change",
+    import: "Import", export: "Export",
   };
   const categoryMap: Record<string, string> = {
     auth: "Auth", community: "Community", call: "Call", bolo: "BOLO",
     civilian: "Civilian", vehicle: "Vehicle", weapon: "Weapon",
     warrant: "Warrant", citation: "Citation", incident: "Incident",
-    unit: "Unit", settings: "Settings", discord: "Discord",
+    penal_code: "Penal Code", unit: "Unit", settings: "Settings", discord: "Discord",
   };
   const cat = categoryMap[category ?? ""] ?? category;
   const v = verbMap[verb ?? ""] ?? verb;

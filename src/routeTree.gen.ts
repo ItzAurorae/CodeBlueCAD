@@ -26,6 +26,7 @@ import { Route as AuthenticatedCadCitationsRouteImport } from './routes/_authent
 import { Route as AuthenticatedCadDashboardRouteImport } from './routes/_authenticated.cad.dashboard'
 import { Route as AuthenticatedCadDispatchRouteImport } from './routes/_authenticated.cad.dispatch'
 import { Route as AuthenticatedCadIncidentsRouteImport } from './routes/_authenticated.cad.incidents'
+import { Route as AuthenticatedCadPenalCodesRouteImport } from './routes/_authenticated.cad.penal-codes'
 import { Route as AuthenticatedCadRecordsRouteImport } from './routes/_authenticated.cad.records'
 import { Route as AuthenticatedCadUnitsRouteImport } from './routes/_authenticated.cad.units'
 import { Route as ApiPublicDiscordCallbackRouteImport } from './routes/api/public/discord/callback'
@@ -121,6 +122,12 @@ const AuthenticatedCadIncidentsRoute =
     path: '/incidents',
     getParentRoute: () => AuthenticatedCadRoute,
   } as any)
+const AuthenticatedCadPenalCodesRoute =
+  AuthenticatedCadPenalCodesRouteImport.update({
+    id: '/penal-codes',
+    path: '/penal-codes',
+    getParentRoute: () => AuthenticatedCadRoute,
+  } as any)
 const AuthenticatedCadRecordsRoute = AuthenticatedCadRecordsRouteImport.update({
   id: '/records',
   path: '/records',
@@ -164,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/cad/dashboard': typeof AuthenticatedCadDashboardRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
   '/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/cad/penal-codes': typeof AuthenticatedCadPenalCodesRoute
   '/cad/records': typeof AuthenticatedCadRecordsRoute
   '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad/': typeof AuthenticatedCadIndexRoute
@@ -186,6 +194,7 @@ export interface FileRoutesByTo {
   '/cad/dashboard': typeof AuthenticatedCadDashboardRoute
   '/cad/dispatch': typeof AuthenticatedCadDispatchRoute
   '/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/cad/penal-codes': typeof AuthenticatedCadPenalCodesRoute
   '/cad/records': typeof AuthenticatedCadRecordsRoute
   '/cad/units': typeof AuthenticatedCadUnitsRoute
   '/cad': typeof AuthenticatedCadIndexRoute
@@ -211,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/cad/dashboard': typeof AuthenticatedCadDashboardRoute
   '/_authenticated/cad/dispatch': typeof AuthenticatedCadDispatchRoute
   '/_authenticated/cad/incidents': typeof AuthenticatedCadIncidentsRoute
+  '/_authenticated/cad/penal-codes': typeof AuthenticatedCadPenalCodesRoute
   '/_authenticated/cad/records': typeof AuthenticatedCadRecordsRoute
   '/_authenticated/cad/units': typeof AuthenticatedCadUnitsRoute
   '/_authenticated/cad/': typeof AuthenticatedCadIndexRoute
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/cad/dashboard'
     | '/cad/dispatch'
     | '/cad/incidents'
+    | '/cad/penal-codes'
     | '/cad/records'
     | '/cad/units'
     | '/cad/'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/cad/dashboard'
     | '/cad/dispatch'
     | '/cad/incidents'
+    | '/cad/penal-codes'
     | '/cad/records'
     | '/cad/units'
     | '/cad'
@@ -282,6 +294,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cad/dashboard'
     | '/_authenticated/cad/dispatch'
     | '/_authenticated/cad/incidents'
+    | '/_authenticated/cad/penal-codes'
     | '/_authenticated/cad/records'
     | '/_authenticated/cad/units'
     | '/_authenticated/cad/'
@@ -424,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCadIncidentsRouteImport
       parentRoute: typeof AuthenticatedCadRoute
     }
+    '/_authenticated/cad/penal-codes': {
+      id: '/_authenticated/cad/penal-codes'
+      path: '/penal-codes'
+      fullPath: '/cad/penal-codes'
+      preLoaderRoute: typeof AuthenticatedCadPenalCodesRouteImport
+      parentRoute: typeof AuthenticatedCadRoute
+    }
     '/_authenticated/cad/records': {
       id: '/_authenticated/cad/records'
       path: '/records'
@@ -468,6 +488,7 @@ interface AuthenticatedCadRouteChildren {
   AuthenticatedCadDashboardRoute: typeof AuthenticatedCadDashboardRoute
   AuthenticatedCadDispatchRoute: typeof AuthenticatedCadDispatchRoute
   AuthenticatedCadIncidentsRoute: typeof AuthenticatedCadIncidentsRoute
+  AuthenticatedCadPenalCodesRoute: typeof AuthenticatedCadPenalCodesRoute
   AuthenticatedCadRecordsRoute: typeof AuthenticatedCadRecordsRoute
   AuthenticatedCadUnitsRoute: typeof AuthenticatedCadUnitsRoute
   AuthenticatedCadIndexRoute: typeof AuthenticatedCadIndexRoute
@@ -479,6 +500,7 @@ const AuthenticatedCadRouteChildren: AuthenticatedCadRouteChildren = {
   AuthenticatedCadDashboardRoute: AuthenticatedCadDashboardRoute,
   AuthenticatedCadDispatchRoute: AuthenticatedCadDispatchRoute,
   AuthenticatedCadIncidentsRoute: AuthenticatedCadIncidentsRoute,
+  AuthenticatedCadPenalCodesRoute: AuthenticatedCadPenalCodesRoute,
   AuthenticatedCadRecordsRoute: AuthenticatedCadRecordsRoute,
   AuthenticatedCadUnitsRoute: AuthenticatedCadUnitsRoute,
   AuthenticatedCadIndexRoute: AuthenticatedCadIndexRoute,
